@@ -1,0 +1,3753 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CitasCuba | Conecta con personas afines</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #ff5a8a;
+      --secondary: #985cff;
+      --accent: #ffb6d2;
+      --light: #fff5fa;
+      --dark: #212529;
+      --heart: #ff3867;
+      --primary-m: #2563eb;
+      --secondary-m: #16a34a;
+      --accent-m: #93c5fd;
+      --light-m: #eef6ff;
+      --heart-m: #2563eb;
+       /* NUEVO: Colores masculino */
+      --primary-m: #2563eb;
+      --secondary-m: #16a34a;
+      --accent-m: #93c5fd;
+      --light-m: #eef6ff;
+      --heart-m: #2563eb;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      position: relative;
+      background: radial-gradient(circle at 60% 30%, var(--accent) 0%, #fff 100%);
+      transition: background 0.4s;
+    }
+    .hero-section {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .btn-gradient {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 12px 30px;
+      border-radius: 50px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .btn-gradient .fa-heart {
+      margin-right: 8px;
+      animation: heartbeat 1.2s infinite;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1);}
+      10%, 30% { transform: scale(1.15);}
+      20%, 40% { transform: scale(0.95);}
+      50% { transform: scale(1.2);}
+      60% { transform: scale(1);}
+    }
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+    }
+    .match-card {
+      border-radius: 22px;
+      border: 2px solid var(--accent);
+      background: #fff7fb;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(255,90,138,0.08);
+      transition: transform 0.18s;
+    }
+    .match-card:hover {
+      box-shadow: 0 12px 32px rgba(255,90,138,0.18);
+      transform: translateY(-5px) scale(1.03);
+    }
+    .match-percentage {
+      font-weight: bold;
+      color: var(--primary);
+    }
+    .badge-affinity {
+      background: var(--primary);
+      color: white;
+      border-radius: 50px;
+      font-size: 0.96em;
+      padding: 6px 14px;
+      margin: 0 2px 5px 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .profile-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid white;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .page {
+      display: none;
+      padding-top: 20px;
+      padding-bottom: 80px;
+    }
+    .active-page {
+      display: block;
+    }
+    .auth-form {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .footer {
+      background: linear-gradient(135deg, var(--primary) 80%, var(--secondary) 100%);
+      color: #fff;
+      margin-top: 60px;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -2px 16px rgba(0,0,0,0.06);
+    }
+    .footer a {
+      color: #ffffffcc;
+      transition: color 0.2s;
+    }
+    .footer a:hover {
+      color: #fff;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .affinity-bars {
+      height: 10px;
+      border-radius: 5px;
+      background: #e9ecef;
+      margin-bottom: 15px;
+      overflow: hidden;
+    }
+    .affinity-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+    .affinity-detail {
+      font-size: 0.85rem;
+      color: #6c757d;
+    }
+    .card-heart {
+      position: absolute;
+      top: -18px; left: 50%; transform: translateX(-50%);
+      background: var(--heart);
+      color: white;
+      border-radius: 50%;
+      width: 38px; height: 38px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4em;
+      box-shadow: 0 2px 14px #ff38673b;
+      z-index: 2;
+    }
+    #hearts-container {
+      position: absolute;
+      left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;
+    }
+    .heart-float {
+      position: absolute;
+      bottom: 10px;
+      font-size: 2em;
+      color: #ff5a8a;
+      opacity: 0.75;
+      animation: floatUp 1.8s linear forwards;
+    }
+    @keyframes floatUp {
+      to {
+        transform: translateY(-160px) scale(1.2) rotate(-20deg);
+        opacity: 0;
+      }
+    }
+    /* Chat styles */
+    #chatContainer {max-width:400px;margin:0 auto;border:1px solid #ccc;padding:18px;border-radius:10px;background:#fff;}
+    #messages {height:300px;overflow-y:auto;border:1px solid #eee;padding:10px;margin-bottom:10px;background:#fafafa;}
+    .mine {text-align:right;}
+    .theirs {text-align:left;}
+    .mensaje {margin:5px 0;}
+    .advertencia {color:orange;margin:10px 0;}
+    .sinMensajes {color:#c00; background:#fee; border:1px solid #f99; padding:12px; margin:14px 0;}
+    .recargaBtn {background:#0099ff;color:#fff;border:none;padding: 7px 16px; border-radius:5px;cursor:pointer;}
+    .user-row {margin-bottom:8px;}
+    .user-row label {margin-right:4px;}
+    #chatHeader {margin-bottom:15px;font-weight:bold;}
+    .open-chat-btn {margin-top:10px;}
+    .page { display: none; }
+.active-page { display: block; }
+    /* ====== CAMBIOS añadidos para panel romántico y tema masculino ====== */
+    .romantic-chats-list {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      background: linear-gradient(90deg, #fff5fa 60%, #ffe9f2 100%);
+      border-radius: 16px;
+      box-shadow: 0 2px 16px #ffb6d23f;
+      align-items: stretch;
+      margin-bottom: 10px;
+    }
+    .chat-bubble {
+      min-width: 180px;
+      max-width: 220px;
+      background: linear-gradient(135deg, var(--primary) 80%, var(--secondary) 100%);
+      color: #fff;
+      border-radius: 18px;
+      box-shadow: 0 3px 12px #ffb6d2b0;
+      padding: 14px 16px 12px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .chat-bubble:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 7px 16px #ffb6d2b0;
+    }
+    .chat-bubble .heart-chat {
+      position: absolute;
+      top: -14px; right: -14px;
+      font-size: 1.4em;
+      color: var(--heart);
+      filter: drop-shadow(0 2px 4px #ffb6d290);
+    }
+    .chat-bubble .chat-avatar {
+      width: 52px; height:52px; border-radius: 50%;
+      border: 3px solid #fff;
+      margin-bottom: 8px;
+      object-fit: cover;
+      box-shadow: 0 1px 8px #ff38673b;
+    }
+    .chat-bubble .chat-name {
+      font-weight: bold;
+      font-size: 1.09em;
+      margin-bottom: 3px;
+    }
+    .chat-bubble .chat-lastmsg {
+      font-size: 0.95em;
+      color: #fff9;
+      margin-bottom: 3px;
+      text-align: center;
+    }
+    .chat-bubble .chat-time {
+      font-size: 0.82em;
+      color: #fff7;
+    }
+    /* Masculino Theme */
+    .masculino-theme {
+      --primary: var(--primary-m) !important;
+      --secondary: var(--secondary-m) !important;
+      --accent: var(--accent-m) !important;
+      --light: var(--light-m) !important;
+      --heart: var(--heart-m) !important;
+      background: radial-gradient(circle at 60% 30%, var(--accent-m) 0%, #fff 100%) !important;
+    }
+    .masculino-theme .hero-section {
+      background: linear-gradient(135deg, var(--primary-m), var(--secondary-m)) !important;
+    }
+    .masculino-theme .btn-gradient {
+      background: linear-gradient(135deg, var(--primary-m), var(--secondary-m)) !important;
+    }
+    .masculino-theme .badge-affinity {
+      background: var(--primary-m) !important;
+    }
+    .masculino-theme .footer {
+      background: linear-gradient(135deg, var(--primary-m) 80%, var(--secondary-m) 100%) !important;
+    }
+    .masculino-theme .romantic-chats-list {
+      background: linear-gradient(90deg, #eef6ff 60%, #dbeafe 100%);
+      box-shadow: 0 2px 16px #93c5fd3f;
+    }
+    .masculino-theme .chat-bubble {
+      background: linear-gradient(135deg, var(--primary-m) 80%, var(--secondary-m) 100%) !important;
+      box-shadow: 0 3px 12px #93c5fdb0;
+    }
+    .masculino-theme .chat-bubble .heart-chat {
+      color: var(--heart-m) !important;
+    }
+    /* ... Tus estilos originales aquí ... */
+    /* (Para ahorrar espacio, puedes pegar tus estilos aquí, ya revisados) */   
+    /* Mensajes estilo WhatsApp/Messenger */
+.msg-bubble {
+  max-width: 55%;           /* Más pequeño que antes */
+  min-width: 70px;
+  margin: 6px 0;
+  padding: 8px 14px;
+  border-radius: 16px;
+  display: inline-block;
+  font-size: 0.97em;        /* Más pequeño */
+  word-break: break-word;
+  position: relative;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.msg-bubble.mine {
+  background: #dcf8c6;
+  color: #222;
+  float: right;
+  text-align: right;
+  border-bottom-right-radius: 6px;
+  margin-left: 45%;
+  margin-right: 8px;
+}
+
+.msg-bubble.theirs {
+  background: #f1f0f0;
+  color: #222;
+  float: left;
+  text-align: left;
+  border-bottom-left-radius: 6px;
+  margin-right: 45%;
+  margin-left: 8px;
+}
+
+/* Limpiar floats para que el siguiente mensaje esté debajo */
+#messages::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.msg-content {
+  word-break: break-word;
+}
+.msg-meta {
+  font-size: 0.8em;
+  color: #888;
+  margin-top: 2px;
+  align-self: flex-end;
+}
+/* Estilos para el botón de soporte */
+#supportFab {
+  transition: all 0.3s;
+  animation: pulse 2s infinite;
+}
+
+#supportFab:hover {
+  transform: scale(1.1);
+  background: #1d4ed8;
+  animation: none;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Estilo para el header de soporte */
+.support-header {
+  background: #2563eb;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+#msg-fab {
+  position: relative;
+}
+#msg-fab .msg-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #dc2626;
+  color: #fff;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  font-size: 0.95em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  z-index: 10;
+  padding: 0 6px;
+  border: 2px solid #fff;
+}
+
+.sidebar-photo-badge {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -10px;
+  font-size: 0.8em;
+  min-width: 20px;
+  background: #dc2626;
+  color: #fff;
+  border-radius: 12px;
+  padding: 0 6px;
+  z-index: 3;
+  border: 2px solid #fff;
+}
+/* Sistema de estrellas */
+.star-rating {
+  font-size: 1.8em;
+  cursor: pointer;
+  display: inline-block;
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  margin-bottom: 10px;
+}
+
+.star-rating i {
+  color: #e0e0e0;
+  transition: all 0.2s;
+  margin: 0 3px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+
+.star-rating i:hover,
+.star-rating i:hover ~ i {
+  color: #FFC107;
+  transform: scale(1.1);
+}
+
+.star-rating i.selected,
+.star-rating i.selected ~ i {
+  color: #FFC107;
+}
+
+/* Mensajes existentes */
+.suggestion-item {
+  border-left: 3px solid var(--primary);
+  transition: all 0.3s;
+}
+
+.suggestion-item:hover {
+  transform: translateX(5px);
+}
+
+.suggestion-rating {
+  color: #FFC107;
+  font-size: 0.9em;
+  margin-bottom: 5px;
+}
+
+.suggestion-rating .fas {
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Botón del buzón */
+.btn-outline-light {
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-outline-light:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 90, 138, 0.2);
+}
+/* vip targetas */
+.vip-card {
+  border: 2px solid gold !important;
+  background: linear-gradient(135deg, #fffbe0, #fffde7 90%);
+  box-shadow: 0 12px 32px rgba(255, 215, 0, 0.18);
+  position: relative;
+}
+.vip-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: gold;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 10px;
+  padding: 4px 14px;
+  font-size: 1.08em;
+  box-shadow: 0 2px 8px #ffd70066;
+  z-index: 2;
+}
+/* boton vip grupos */
+#vipGroupFab:hover {
+  transform: scale(1.07);
+  background: #daa520;
+  color: #fff;
+}
+/* Animación flotante suave  cartas de poromocion */
+.promo-float {
+  animation: floatCard 2.5s ease-in-out infinite alternate;
+  transition: transform 0.2s;
+  will-change: transform;
+}
+@keyframes floatCard {
+  0% { transform: translateY(0px) scale(1);}
+  100% { transform: translateY(-10px) scale(1.03);}
+}
+.promo-float:hover {
+  transform: scale(1.06) translateY(-8px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  z-index: 10;
+}
+  </style>
+</head>
+<body>
+  <!-- Botón flotante Grupos VIP -->
+<div id="vipGroupFab" style="
+  position: fixed;
+  right: 24px;
+  bottom: 100px;
+  z-index: 1051;
+  background: gold;
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: none; /* Solo aparece para VIP */
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.22);
+  cursor: pointer;
+  font-size: 2rem;
+  transition: all 0.3s;
+">
+  <i class="fas fa-users"></i>
+</div>
+  <div id="offlineMessage" style="
+  display:none;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:#fff;
+  z-index:99999;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-size:1.5em;
+  color:#C00;
+">
+  <i class="fas fa-wifi-slash" style="font-size:3em;margin-bottom:20px;"></i>
+  <div>Sin conexión a internet</div>
+  <div style="font-size:0.7em;color:#888;margin-top:10px;">Por favor, revisa tu conexión para continuar usando CubaCitas.</div>
+</div>
+  <!-- Botón de Soporte Técnico -->
+<div id="supportFab" style="
+  position: fixed;
+  right: 24px;
+  bottom: 32px;
+  z-index: 1050;
+  background: #2563eb;
+  color: white;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  cursor: pointer;
+  font-size: 1.2rem;
+">
+  <i class="fas fa-headset"></i>
+</div>
+<!-- Icono flotante de mensajes -->
+<div id="msg-fab" style="
+  position: fixed;
+  left: 24px;
+  bottom: 32px;
+  z-index: 1050;
+  background: #25d366;
+  color: white;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  cursor: pointer;
+  font-size: 2rem;
+">
+  <i class="fas fa-comments"></i>
+</div>
+
+  <!-- Sidebar de chats (oculto por defecto) -->
+<div id="msg-sidebar" style="
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 500px; /* o 600px, según tu gusto y pantalla */
+  max-width: 90vw;
+  background: #fff;
+  box-shadow: 2px 0 16px rgba(0,0,0,0.08);
+  z-index: 1100;
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
+">
+  <div style="padding: 18px 16px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between;">
+    <span style="font-weight: bold; font-size: 1.2em;">Mensajes</span>
+    <button id="close-sidebar" class="btn btn-sm btn-light"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="sidebar-chats-list" style="flex:1; overflow-y:auto; padding: 10px;"></div>
+</div>
+
+  <!-- Todos los modales aquí -->
+<div id="modals-container">
+
+  <!-- Modal de Felicitación por Match (debe estar separado del modal de chat) -->
+<div class="modal fade" id="congratsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background: #ffe9f2; border-radius: 20px; position: relative; overflow: hidden;">
+      <div class="modal-body text-center py-5 position-relative">
+        <div id="hearts-container"></div>
+        <h2 id="congratsTitle" class="mb-4" style="font-size: 2rem; color: #ff5a8a;">
+          <!-- El mensaje se pone por JS -->
+        </h2>
+        <p class="mb-4" style="font-size: 1.1rem;">¡Sigue explorando y conecta con más personas afines!</p>
+        <button class="btn btn-gradient" data-bs-dismiss="modal"><i class="fas fa-heart"></i>¡Gracias!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <button id="showAdminPanelBtn"
+  style="display:none;position:fixed;bottom:40px;right:40px;z-index:99999;background:lime;font-size:1.5em;width:150px;height:50px;"
+  onclick="showPage('adminPanel')">
+  ADMIN
+</button>
+<!-- Panel admin -->
+<div id="adminPanel" class="page">
+  <div class="container py-5">
+    <h2>Panel Admin</h2>
+    <div id="adminPagosList" class="mt-4"></div>
+    <button class="btn btn-outline-secondary mt-4" onclick="showPage('home')">Volver</button>
+  </div>
+</div>
+
+<!-- modal de buson de sugerencias-->
+<div class="modal fade" id="suggestionsModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-gradient text-white" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+  <h5 class="modal-title"><i class="fas fa-envelope-open-text me-2"></i>Buzón de sugerencias</h5>
+  <button type="button" class="btn text-white fs-2 ms-auto" data-bs-dismiss="modal" aria-label="Cerrar" style="background: none; border: none;">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+      <div class="modal-body">
+        <div id="suggestionsList" class="mb-3" style="max-height: 300px; overflow-y: auto; padding: 5px;"></div>
+        
+        <div class="card p-3 mb-3 border-0 shadow-sm">
+          <div class="mb-2">
+            <label class="form-label fw-bold">¿Cómo calificarías esta app?</label>
+            <div class="star-rating mb-2">
+              <i class="far fa-star" data-rating="1"></i>
+              <i class="far fa-star" data-rating="2"></i>
+              <i class="far fa-star" data-rating="3"></i>
+              <i class="far fa-star" data-rating="4"></i>
+              <i class="far fa-star" data-rating="5"></i>
+            </div>
+          </div>
+          <textarea id="newSuggestion" class="form-control mb-2" rows="3" placeholder="Escribe tu sugerencia, crítica o idea..."></textarea>
+          <button onclick="enviarSugerencia()" class="btn btn-gradient">
+            <i class="fas fa-paper-plane me-2"></i>Enviar sugerencia
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Chat (debe estar separado) -->
+<div class="modal fade" id="chatModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width:100vw;">
+    <div class="modal-content">
+      <div id="chatContainer" style="display: flex; width: 100%;">
+        <div id="chatMain" style="flex-grow: 1; padding: 10px; width: 100%;">
+          <!-- Cabecera del chat -->
+          <div id="chatHeader" class="d-flex align-items-center mb-3" style="gap:10px;"></div>
+          <input type="hidden" id="myUid">
+          <input type="hidden" id="otherUid">
+          <div id="messages" style="height:200px; width:100%; overflow-y:auto; margin-bottom:10px;"></div>
+          <input type="text" id="msgInput" class="form-control mb-2" placeholder="Escribe un mensaje...">
+          <button onclick="enviarMensaje()" class="btn btn-primary w-100">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loader global -->
+<div id="globalLoader" style="display:none;position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;">
+  <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+</div>
+
+  <i class="fas fa-comments"></i>
+</div>
+<!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#" onclick="showPage('home')" style="color: var(--primary);">
+        <i class="fas fa-heart me-2"></i>CitasCuba
+      </a>
+      <!-- Buscador para reactivar cuenta -->
+<a href="#" id="estadoCuentaLink" style="margin-left:10px">Estado de cuenta</a>
+<a href="#" id="promocionesLink" style="margin-left:10px"><i class="fas fa-bullhorn"></i> Promociones</a>
+
+<!-- Buscador de Estado de Cuenta (ya lo tienes, solo asegúrate de que el id sea 'buscadorEstadoCuenta') -->
+<div id="buscadorEstadoCuenta" style="max-width:350px; margin: 10px 0; display:none;">
+  <div style="font-weight:bold; color:#2563eb; margin-bottom:8px;">
+    <i class="fas fa-id-badge"></i> Estado de cuenta
+  </div>
+  <form id="formEstadoCuenta" autocomplete="off" class="d-flex align-items-center" style="gap:8px;">
+    <input type="email" class="form-control" id="emailEstadoCuenta" placeholder="Correo de la cuenta..." required style="width:180px;">
+    <button class="btn btn-primary" type="submit">Buscar</button>
+  </form>
+  <div id="resultadoEstadoCuenta" class="mt-2"></div>
+</div>
+      <!-- buscador-->
+        <div id="user-search-bar" class="d-none">
+  <form class="d-flex ms-3 position-relative" style="width: 300px;" autocomplete="off" onsubmit="return false;">
+    <input
+      class="form-control me-2"
+      type="search"
+      placeholder="Buscar usuario..."
+      aria-label="Buscar"
+      id="profileSearchInput"
+      autocomplete="off"
+      style="width: 220px;"
+    >
+    <ul id="autocompleteList" class="list-group position-absolute w-100" style="top:100%; z-index: 1000;"></ul>
+    <div id="searchResults" class="position-absolute w-100" style="top:48px; z-index:2000;"></div>
+  </form>
+</div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto" id="main-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="showPage('matches')"><i class="fas fa-users me-1"></i> Matches</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto" id="auth-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="showPage('login')">Iniciar sesión</a>
+          </li>
+          <li class="nav-item ms-lg-3">
+            <a class="btn btn-gradient" href="#" onclick="showPage('register')"><i class="fas fa-heart"></i>Registrarse</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto d-none" id="user-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+              <img src="https://ui-avatars.com/api/?background=random" alt="Usuario" class="rounded-circle" width="30" id="user-avatar">
+              <span class="ms-2 d-none d-lg-inline" id="username-display">Usuario</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#" onclick="showPage('profile')"><i class="fas fa-user me-2"></i>Mi perfil</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Contenido de páginas -->
+  <div class="container">
+      <!-- Página de Inicio -->
+<div id="home" class="page active-page">
+  <div class="hero-section py-5 text-center">
+    <h1 class="display-4 fw-bold"><i class="fas fa-heartbeat text-gradient"></i> Conecta con personas afines a ti</h1>
+    <p class="lead mt-3 mb-5">Descubre gente cerca de ti con gustos similares y haz nuevas amistades.</p>
+    <a href="#" class="btn btn-gradient btn-lg" onclick="showPage('register')"><i class="fas fa-heart"></i>Comenzar Ahora</a>
+  </div>
+  <!-- Botón del buzón dentro de la página de inicio -->
+  <div class="d-flex justify-content-center gap-3 mt-4">
+    <button class="btn btn-outline-light" onclick="mostrarBuzon()">
+      <i class="fas fa-envelope me-2"></i>Buzón de sugerencias
+    </button>
+  </div>
+</div>
+   <!-- Página de registro -->
+<div id="register" class="page">
+  <div class="py-5">
+    <form class="auth-form" id="registerForm">
+      <h2 class="fw-bold mb-4 text-center">Crear cuenta</h2>
+      <div class="mb-3">
+        <label for="registerName" class="form-label">Nombre completo</label>
+        <input type="text" class="form-control" id="registerName" required>
+      </div>
+      <div class="mb-3">
+        <label for="registerAge" class="form-label">Edad</label>
+        <input type="number" class="form-control" id="registerAge" min="14" max="100" required>
+      </div>
+      <div class="mb-3">
+        <label for="registerEmail" class="form-label">Correo electrónico--pudes poner cualquiera solo cuida la contraceña</label>
+        <input type="email" class="form-control" id="registerEmail" required>
+      </div>
+      <div class="mb-3">
+        <label for="registerPassword" class="form-label">Contraseña--Guardala bien</label>
+        <input type="password" class="form-control" id="registerPassword" required>
+      </div>
+      <div class="mb-3">
+        <label for="registerGender" class="form-label">Género</label>
+        <select class="form-control" id="registerGender" required>
+          <option value="" disabled selected>Selecciona tu género</option>
+          <option value="masculino">Masculino</option>
+          <option value="femenino">Femenino</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="registerCity" class="form-label">Ciudad</label>
+        <input type="text" class="form-control" id="registerCity" required>
+      </div>
+      <!-- Teléfono -->
+      <div class="mb-3">
+        <label for="registerPhone" class="form-label">Teléfono</label>
+        <input type="tel" class="form-control" id="registerPhone" required>
+      </div>
+      <!-- Localidad -->
+      <div class="mb-3">
+        <label for="registerLocalidad" class="form-label">Localidad-Municipio</label>
+        <input type="text" class="form-control" id="registerLocalidad" required>
+      </div>
+      <!-- ¿Qué haces? -->
+      <div class="mb-3">
+        <label class="form-label">¿Qué haces?</label>
+        <div>
+          <label class="form-check-label me-3">
+            <input type="radio" class="form-check-input" name="registerOcupacion" id="registerEstudia" value="Estudia"> Estudias
+          </label>
+          <label class="form-check-label me-3">
+            <input type="radio" class="form-check-input" name="registerOcupacion" id="registerTrabaja" value="Trabaja"> Trabajas
+          </label>
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="registerOcupacion" id="registerAmbas" value="Ambas"> Ambas
+          </label>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="registerMusic" class="form-label">Géneros musicales favoritos</label>
+        <input type="text" class="form-control" id="registerMusic" required>
+        <small class="text-muted">Separa los géneros musicales con comas (ej: Rock, Pop, Electrónica)</small>
+      </div>
+      <div class="mb-3">
+        <label for="registerHobbies" class="form-label">Tus 3 aficiones principales</label>
+        <input type="text" class="form-control" id="registerHobbies" required>
+        <small class="text-muted">Separa cada afición con comas (ej: Fotografía, Cocina, Viajes)</small>
+      </div>
+      <div class="mb-3 text-danger d-none" id="registerError"></div>
+      <button type="submit" class="btn btn-gradient w-100"><i class="fas fa-heart"></i>Registrarse</button>
+      <div class="text-center mt-3">
+        <a href="#" onclick="showPage('login')">¿Ya tienes cuenta? Inicia sesión</a>
+      </div>
+    </form>
+  </div>
+</div>
+    <!-- Página de login -->
+    <div id="login" class="page">
+      <div class="py-5">
+        <form class="auth-form" id="loginForm">
+          <h2 class="fw-bold mb-4 text-center">Iniciar sesión</h2>
+          <div class="mb-3">
+            <label for="loginEmail" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="loginEmail" required>
+          </div>
+          <div class="mb-3">
+            <label for="loginPassword" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="loginPassword" required>
+          </div>
+          <div class="mb-3 text-danger d-none" id="loginError"></div>
+          <button type="submit" class="btn btn-gradient w-100"><i class="fas fa-heart"></i>Entrar</button>
+          <div class="text-center mt-3">
+          <a href="#" onclick="showPage('register')">¿No tienes cuenta? Regístrate</a>
+          &nbsp;|&nbsp;
+          <a href="#" onclick="showPage('recuperarPasswordPage')">¿Has olvidado tu contraseña?</a>
+        </div>
+        </form>
+      </div>
+    </div>
+    <!-- Página de Matches -->
+   <div id="matches" class="page">
+  <div class="py-5">
+    <h2 class="fw-bold mb-4 text-center"><i class="fas fa-heart-circle-check text-gradient"></i> Tus matches</h2>
+    <div id="matchesList" class="row g-4"></div>
+  </div>
+</div>
+<!-- Página de Promociones -->
+<div id="promocionesPage" class="page">
+  <div class="py-5 text-center">
+    <h2 class="fw-bold mb-4"><i class="fas fa-bullhorn text-gradient"></i> Promociones</h2>
+    <div id="promocionesList" class="row g-4"></div>
+    <!-- Panel de administración solo para el admin -->
+    <div id="adminPromocionesPanel" style="display:none" class="mt-5">
+      <h4>Administrar Promociones</h4>
+      <div id="promosFormContainer" class="row"></div>
+    </div>
+  </div>
+</div>
+<!-- Página de Perfil -->
+<div id="profile" class="page">
+  <div class="py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="fw-bold mb-4"><i class="fas fa-user"></i> Mi perfil</h2>
+            <form id="profileForm">
+              <div class="text-center mb-4">
+               <div class="text-center mb-4">
+                <img src="https://ui-avatars.com/api/?background=random" 
+                    alt="Perfil" 
+                    class="profile-img" 
+                    id="profileAvatar">
+                <div class="mt-2">
+                  <input type="file" 
+                        id="avatarUpload" 
+                        accept="image/jpeg, image/png, image/webp" 
+                        class="d-none">
+                  <button type="button" 
+                          class="btn btn-outline-primary" 
+                          id="uploadBtn">
+                    <i class="fas fa-camera me-2"></i>Cambiar foto
+                  </button>
+                  <small class="d-block text-muted">Máx. 2MB (JPEG, PNG, WebP)</small>
+                </div>
+              </div>
+              </div>
+              <div class="mb-3">
+                <label for="profileName" class="form-label">Nombre completo</label>
+                <input type="text" class="form-control" id="profileName" required>
+              </div>
+              <div class="mb-3">
+                <label for="profileAge" class="form-label">Edad</label>
+                <input type="number" class="form-control" id="profileAge" min="14" max="100" required>
+              </div>
+              <div class="mb-3">
+                <label for="profileGender" class="form-label">Género</label>
+                <select class="form-control" id="profileGender" required>
+                  <option value="masculino">Masculino</option>
+                  <option value="femenino">Femenino</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="profileCity" class="form-label">Ciudad</label>
+                <input type="text" class="form-control" id="profileCity" required>
+              </div>
+              <div class="mb-3">
+                <label for="profilePhone" class="form-label">Teléfono</label>
+                <input type="tel" class="form-control" id="profilePhone" required>
+              </div>
+              <div class="mb-3">
+                <label for="profileLocalidad" class="form-label">Localidad</label>
+                <input type="text" class="form-control" id="profileLocalidad" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">¿Qué haces?</label>
+                <div>
+                  <label class="form-check-label me-3">
+                    <input type="radio" class="form-check-input" name="profileOcupacion" id="profileEstudia" value="Estudia"> Estudias
+                  </label>
+                  <label class="form-check-label me-3">
+                    <input type="radio" class="form-check-input" name="profileOcupacion" id="profileTrabaja" value="Trabaja"> Trabajas
+                  </label>
+                  <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="profileOcupacion" id="profileAmbas" value="Ambas"> Ambas
+                  </label>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="profileMusic" class="form-label">Géneros musicales favoritos</label>
+                <input type="text" class="form-control" id="profileMusic" required>
+                <small class="text-muted">Separa los géneros con comas (ej: Rock, Pop, Electrónica)</small>
+              </div>
+              <div class="mb-3">
+                <label for="profileHobbies" class="form-label">Tus 3 aficiones principales</label>
+                <input type="text" class="form-control" id="profileHobbies" required>
+                <small class="text-muted">Separa cada afición con comas (ej: Fotografía, Cocina, Viajes)</small>
+              </div>
+              <div class="mb-3">
+                <label for="profileBio" class="form-label">Sobre ti</label>
+                <textarea class="form-control" id="profileBio" rows="3"></textarea>
+              </div>
+              <button type="submit" class="btn btn-gradient"><i class="fas fa-heart"></i>Guardar cambios</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Página de 1 Pago -->
+<!-- Página de 1er Pago (Registro/Membresía nueva) -->
+<div id="payment" class="page">
+  <div class="py-5 text-center">
+    <h2 class="fw-bold mb-4">Activa tu cuenta</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-4">
+        <div class="card mb-4 shadow">
+          <div class="card-body">
+            <h5 class="card-title">Usuario</h5>
+            <p class="card-text">Acceso básico por 1 mes.</p>
+            <h3>$50 MN</h3>
+            <button class="btn btn-gradient" onclick="seleccionaMembresia('usuario')">Seleccionar</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card mb-4 shadow">
+          <div class="card-body">
+            <h5 class="card-title">VIP</h5>
+            <p class="card-text">Perfil destacado, más matches, acceso a grupos de personas afines.</p>
+            <h3>$150 MN</h3>
+            <button class="btn btn-gradient" onclick="seleccionaMembresia('vip')">Seleccionar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Paso 2: Selección de método de pago -->
+    <div id="seleccionMetodoPagoPago1" style="display:none; max-width:400px; margin:auto;">
+      <hr>
+      <h4>Elige un método de pago:</h4>
+      <div class="d-flex justify-content-center mb-4">
+        <button class="btn btn-outline-primary me-3" onclick="seleccionaMetodoPagoPago1('transferencia')">Transferencia</button>
+        <button class="btn btn-outline-success" onclick="seleccionaMetodoPagoPago1('saldo')">Saldo</button>
+      </div>
+    </div>
+    <!-- Paso 3: Detalle del método de pago -->
+    <div id="paymentStep2Pago1" style="display:none; max-width:400px; margin:auto;">
+      <!-- Transferencia -->
+      <div id="pagoTransferenciaPago1" style="display:none;">
+        <hr>
+        <h4><span class="badge bg-primary me-2">Paso 1</span>Transfiere a la siguiente tarjeta</h4>
+        <div class="alert alert-secondary mt-2 mb-2" style="font-size:1.2em;">
+          <b>9205-9598-7619-5018</b>
+        </div>
+        <h4 class="mt-4"><span class="badge bg-primary me-2">Paso 2</span>Número a confirmar el pago</h4>
+        <div class="alert alert-info mb-3" style="font-size:1.2em;">
+          <b id="numeroConfirmacionPago">58874007</b>
+        </div>
+        <h4 class="mt-4"><span class="badge bg-primary me-2">Paso 3</span>Importante en Transfermóvil</h4>
+        <div class="alert alert-warning mb-3" style="font-size:1.07em;">
+          Asegúrate de <b>activar el campo</b> en Transfermóvil que dice:<br>
+          <span class="text-success">"EL DESTINATARIO RECIBE MI NÚMERO DE MÓVIL"</span><br>
+          <span style="font-size:0.97em;">Esto es clave para confirmar tu pago.</span>
+        </div>
+        <h4 class="mt-4"><span class="badge bg-primary me-2">Paso 4</span>Agrega el número desde donde realizaste el pago</h4>
+        <input type="tel" class="form-control mt-2 mb-2" id="userPhonePago1Transferencia" placeholder="Número desde donde realisaste el pago" required>
+        <div class="alert alert-warning mb-2" style="font-size:0.97em;">
+          <b>Nota importante:</b> Si no activa el campo requerido en Transfermóvil/EnZona, o si el número que nos brinda no coincide con el que realizó el pago, <u>su cuenta no será activada</u>.<br>
+          Para cualquier duda, cuestión o sugerencia, comuníquese con nosotros directamente en el <b>58874007</b>.
+        </div>
+        <button class="btn btn-gradient mt-3" onclick="enviarPago()">Notificar pago</button>
+        <div id="paymentStatusPago1Transferencia" class="mt-4"></div>
+      </div>
+      <!-- Saldo -->
+      <div id="pagoSaldoPago1" style="display:none;">
+        <div class="alert alert-info mt-3">Sistema de pago por saldo.</div>
+        <h4 class="mt-4"><span class="badge bg-primary me-2">Paso 1</span>Número a confirmar el pago</h4>
+        <div class="alert alert-info mb-3" style="font-size:1.2em;">
+          <b id="numeroConfirmacionPagoSaldo">58874007</b>
+        </div>
+        <h4 class="mt-4"><span class="badge bg-primary me-2">Paso 2</span>Agrega el número desde donde realizaste el pago</h4>
+        <input type="tel" class="form-control mt-2 mb-2" id="userPhonePago1Saldo" placeholder="Número desde donde realisaste el pago" required>
+        <div class="alert alert-warning mb-2" style="font-size:0.97em;">
+          <b>Nota importante:</b> Si no activa el campo requerido en Transfermóvil/EnZona, o si el número que nos brinda no coincide con el que realizó el pago, <u>su cuenta no será activada</u>.<br>
+          Para cualquier duda, cuestión o sugerencia, comuníquese con nosotros directamente en el <b>58874007</b>.
+        </div>
+        <button class="btn btn-gradient mt-3" onclick="enviarPagoSaldo()">Notificar pago</button>
+        <div id="paymentStatusPago1Saldo" class="mt-4"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Página de pago pendiente (debe ir FUERA del payment) -->
+<div id="pendientePage" class="page">
+  <div class="py-5 text-center">
+    <h2 class="fw-bold mb-4">Tu pago está pendiente</h2>
+    <p class="lead">Estamos procesando tu pago. En cuanto se apruebe, te avisaremos por email o WhatsApp. Gracias por tu paciencia.</p>
+  </div>
+</div>
+<!-- METODO PARA REACTIVAR CUENTA -->
+<div id="reactivarCuentaSection" class="page">
+  <div class="py-5 text-center">
+    <h2 class="fw-bold mb-4">¡Te damos la bienvenida de nuevo!</h2>
+    <p class="lead">Reactiva tu cuenta y vuelve a conectar con tus matches y amigos de CitasCuba.</p>
+    <div class="row justify-content-center">
+      <div class="col-md-4">
+        <div class="card mb-4 shadow">
+          <div class="card-body">
+            <h5 class="card-title">Usuario</h5>
+            <p class="card-text">Acceso básico por 1 mes.</p>
+            <h3>$50 MN</h3>
+            <button class="btn btn-gradient" onclick="seleccionaMembresiaReactivar('usuario')">Seleccionar</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card mb-4 shadow">
+          <div class="card-body">
+            <h5 class="card-title">VIP</h5>
+            <p class="card-text">Perfil destacado, más matches, acceso a grupos de personas afines.</p>
+            <h3>$150 MN</h3>
+            <button class="btn btn-gradient" onclick="seleccionaMembresiaReactivar('vip')">Seleccionar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Paso 2: Selección de método de pago -->
+    <div id="seleccionMetodoPagoReactivar" style="display:none; max-width:400px; margin:auto;">
+      <hr>
+      <h4>Elige un método de pago:</h4>
+      <div class="d-flex justify-content-center mb-4">
+        <button class="btn btn-outline-primary me-3" onclick="seleccionaMetodoPagoReactivar('transferencia')">Transferencia</button>
+        <button class="btn btn-outline-success" onclick="seleccionaMetodoPagoReactivar('saldo')">Saldo</button>
+      </div>
+    </div>
+    <!-- Paso 3: Detalle del método de pago -->
+    <div id="paymentStep2Reactivar" style="display:none; max-width:400px; margin:auto;">
+      <!-- Transferencia -->
+      <div id="pagoTransferenciaReactivar" style="display:none;">
+        <hr>
+        <h4><span class="badge bg-primary me-2">Paso 1</span>Transfiere a la siguiente tarjeta</h4>
+        <div class="alert alert-secondary mt-2 mb-2" style="font-size:1.2em;">
+          <b>9205-9598-7619-5018</b>
+        </div>
+        <!-- PASO 2: Número a confirmar el pago -->
+        <h4 class="mt-4"><span class="badge bg-primary me-2">Paso 2</span>Número a confirmar el pago</h4>
+        <div class="alert alert-info mb-3" style="font-size:1.2em;">
+          <b id="numeroConfirmacionPagoReactivar">58874007</b>
+        </div>
+        <!-- Paso 3: Activar campo en Transfermóvil -->
+        <h4 class="mt-4"><span class="badge bg-primary me-2">Paso 3</span>Importante en Transfermóvil</h4>
+        <div class="alert alert-warning mb-3" style="font-size:1.07em;">
+          Asegúrate de <b>activar el campo</b> en Transfermóvil que dice:<br>
+          <span class="text-success">"EL DESTINATARIO RECIBE MI NÚMERO DE MÓVIL"</span><br>
+          <span style="font-size:0.97em;">Esto es clave para confirmar tu pago.</span>
+        </div>
+        <!-- Paso 4: WhatsApp -->
+        <h4 class="mt-4"><span class="badge bg-primary me-2">Paso 4</span>Agrega el número desde donde realizaste el pago</h4>
+        <input type="tel" class="form-control mt-2 mb-2" id="reactivarPhone" placeholder="Número desde donde realisaste el pago" required>
+        <div class="alert alert-warning mb-2" style="font-size:0.97em;">
+          <b>Nota importante:</b> Si no activa el campo requerido en Transfermóvil/EnZona, o si el número que nos brinda no coincide con el que realizó el pago, <u>su cuenta no será activada y pasara a fase de revición</u>.<br>
+          Para cualquier duda, cuestión o sugerencia, comuníquese con nosotros directamente en el <b>58874007</b>.
+        </div>
+        <button class="btn btn-gradient mt-3" onclick="enviarPagoReactivacion()">Notificar pago y reactivar</button>
+        <div id="reactivarStatus" class="mt-4"></div>
+      </div>
+      <!-- Saldo -->
+      <div id="pagoSaldoReactivar" style="display:none;">
+        <div class="alert alert-info mt-3">Sistema de pago por saldo.</div>
+        <!-- Paso 1: Número a confirmar el pago -->
+        <h4 class="mt-4"><span class="badge bg-primary me-2">Paso 1</span>Número a confirmar el pago</h4>
+        <div class="alert alert-info mb-3" style="font-size:1.2em;">
+          <b id="numeroConfirmacionPagoSaldoReactivar">58874007</b>
+        </div>
+        <!-- Paso 2: Agrega el número desde donde realizaste el pago -->
+        <h4 class="mt-4"><span class="badge bg-primary me-2">Paso 2</span>Agrega el número desde donde realizaste el pago</h4>
+        <input type="tel" class="form-control mt-2 mb-2" id="reactivarPhoneSaldo" placeholder="Número desde donde realisaste el pago" required>
+        <button class="btn btn-gradient mt-3" onclick="enviarPagoSaldoReactivar()">Notificar pago</button>
+        <div id="paymentStatusSaldoReactivar" class="mt-4"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="recuperarPasswordPage" class="page">
+  <div class="py-5">
+    <form class="auth-form" id="recuperarPasswordForm">
+      <h2 class="fw-bold mb-4 text-center">Recuperar contraseña</h2>
+      <div class="mb-3">
+        <label for="recEmail" class="form-label">Correo electrónico</label>
+        <input type="email" class="form-control" id="recEmail" required>
+      </div>
+      <div id="recuperarPasswordMsg" class="mb-2"></div>
+      <button type="submit" class="btn btn-gradient w-100">Enviar enlace</button>
+    </form>
+    <div class="text-center mt-3">
+      <a href="#" onclick="showPage('login')">Volver a iniciar sesión</a>
+    </div>
+  </div>
+</div>
+<div id="nuevaPasswordPage" class="page">
+  <div class="py-5">
+    <form class="auth-form" id="nuevaPasswordForm">
+      <h2 class="fw-bold mb-4 text-center">Restablecer contraseña</h2>
+      <div class="mb-3">
+        <label for="newPassword" class="form-label">Nueva contraseña</label>
+        <input type="password" class="form-control" id="newPassword" required>
+      </div>
+      <div id="nuevaPasswordMsg" class="mb-2"></div>
+      <button type="submit" class="btn btn-gradient w-100">Cambiar contraseña</button>
+    </form>
+    <div class="text-center mt-3">
+      <a href="#" onclick="showPage('login')">Volver a iniciar sesión</a>
+    </div>
+  </div>
+</div>
+<!-- Loader global -->
+<div id="globalLoader" style="display:none;position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;">
+  <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+</div>
+  <!-- Footer -->
+  <footer class="footer mt-5 border-top">
+    <div class="container py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
+      <div class="d-flex align-items-center mb-3 mb-md-0">
+        <i class="fas fa-heart me-2 text-gradient" style="font-size: 1.5rem;"></i>
+        <span class="fw-bold" style="font-size: 1.1rem;">CitasCuba</span>
+        <span class="text-white-50 ms-3 small">© 2025. Todos los derechos reservados.</span>
+      </div>
+      <div>
+        <i class="fas fa-heart mx-1"></i>
+        <i class="fas fa-heartbeat mx-1"></i>
+        <i class="fas fa-heart-circle-check mx-1"></i>
+      </div>
+    </div>
+    <!-- pagina de grupos vip -->
+<div id="gruposVip" class="page">
+  <div class="py-5 text-center">
+    <h2 class="fw-bold mb-4"><i class="fas fa-crown" style="color:gold"></i> Grupos VIP</h2>
+    <p>¡Bienvenido! Accede a los grupos exclusivos para usuarios VIP.</p>
+    <!-- Aquí puedes poner los grupos reales o una demo -->
+    <div class="row justify-content-center">
+  <div class="col-md-3">
+    <div class="card mb-4 shadow vip-card">
+      <div class="card-body">
+        <h5 class="card-title">Reparteros</h5>
+        <p class="card-text">Grupo exclusivo para fanáticos de la música urbana cubana.</p>
+        <button class="btn btn-gradient" onclick="mostrarListaGrupoVip('reparteros')">Entrar</button>
+        <div id="listaReparteros"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card mb-4 shadow vip-card">
+      <div class="card-body">
+        <h5 class="card-title">Metaleros</h5>
+        <p class="card-text">Grupo para amantes del metal y rock pesado.</p>
+        <button class="btn btn-gradient" onclick="mostrarListaGrupoVip('metaleros')">Entrar</button>
+        <div id="listaMetaleros"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card mb-4 shadow vip-card">
+      <div class="card-body">
+        <h5 class="card-title">Gaimers</h5>
+        <p class="card-text">Comunidad de gamers cubanos VIP.</p>
+        <button class="btn btn-gradient" onclick="mostrarListaGrupoVip('gaimers')">Entrar</button>
+        <div id="listaGaimers"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  </footer>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Función global para obtener la fecha/hora oficial de Cuba (zona America/Havana)
+   async function getCubaDate() {
+  const { data, error } = await supabaseClient.rpc('get_cuba_time');
+  if (error) {
+    console.error('No se pudo obtener la hora de Cuba desde Supabase', error);
+    return null;
+  }
+  return data ? new Date(data) : null;
+}
+    // --- INICIALIZACIÓN DE SUPABASE ---
+    const SUPABASE_URL = 'https://vapzeadehecenggrknkk.supabase.co';
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZhcHplYWRlaGVjZW5nZ3JrbmtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzYzNDAsImV4cCI6MjA2NTE1MjM0MH0.R-CHvj5TGkjOauRzxLn_ToBJF3qa5MUUuWKnewHoJPQ";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const ADMIN_USER_ID = 'a566d242-b0a2-444a-a7d8-76f39701a666';
+    // --- VARIABLES GLOBALES ---
+    const appState = { currentUser: null, userProfile: null };
+    let congratsShown = false;
+    let chatModalInstance = null;
+    let congratsInstance = null;
+    let membresiaSeleccionada = "";
+    let metodoPagoSeleccionado = null;
+    let metodoPagoSeleccionadoReactivar = null;
+    let membresiaSeleccionadaReactivar = "";
+    const MAX_SUGGESTIONS = 20;
+    let suggestionsModal = null;
+    let currentRating = 0;
+   
+    // --- TELEGRAM BOT FUNCTION ---
+// Place this NEAR THE TOP of your script, after your config variables
+const TELEGRAM_BOT_TOKEN = '8168722042:AAHuy9CA-NvB8_o1fuC-pWjivIFLWQ9uSh8';
+const TELEGRAM_CHAT_ID = '-1002623378673';
+
+async function enviarComprobanteTelegram(datos) {
+  const mensaje = `
+<b>📄 NUEVO COMPROBANTE DE PAGO</b>
+👤 Nombre: ${datos.name || '-'}
+📧 Email: ${datos.email || '-'}
+📱 Teléfono: ${datos.phone || '-'}
+📲 Número desde donde se realiso el pago: ${datos.whatsapp_pago || '-'}
+🏙️ Ciudad: ${datos.city || '-'}
+🌎 Localidad: ${datos.localidad || '-'}
+🧑‍🎤 Género: ${datos.gender || '-'}
+💳 Membresía: ${datos.tipo || '-'}
+💵 Método: ${datos.metodo || '-'}
+⏰ Hora: ${new Date().toLocaleString('es-ES')}
+`;
+
+  await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: TELEGRAM_CHAT_ID,
+      text: mensaje,
+      parse_mode: "HTML"
+    })
+  });
+}
+const TELEGRAM_BOT_TOKEN_ADMIN = '7514449724:AAGNu21z03F2VtKq5Awx2czbnTFgB0sgoFM';
+const TELEGRAM_CHAT_ID_ADMIN = '-1002611616142';
+
+async function enviarComprobanteAdminTelegram(datos, estadoAccion) {
+  let encabezado = '<b>🔔 ESTADO DE LA SOLICITUD</b>';
+  if (estadoAccion === 'Nos cominicaremos con usted en breve') {
+    encabezado = '<b>🔔 SU SOLICITUD ESTÁ SIENDO REVISADA</b>';
+  } 
+  else if (estadoAccion === 'Su cuenta fue activada') {
+    encabezado = '<b>🎉 ES UN PLACER DARTE LA BIENVENIDA</b>';
+  } else if (estadoAccion === 'SOLICITUD RECHAZADA Y DATOS ELIMINADOS') {
+    encabezado = '<b>⛔ SOLICITUD RECHAZADA Y DATOS ELIMINADOS</b>';
+  } else {
+    encabezado = '<b>🔔 ACCIÓN ADMINISTRATIVA</b>';
+  }
+
+  const mensaje = `
+${encabezado}
+👤 Nombre: ${datos.name || '-'}
+📧 Email: ${datos.email || '-'}
+📱 Número de registro: ${datos.phone || '-'}
+🏙️ Ciudad: ${datos.city || '-'}
+🌎 Localidad: ${datos.localidad || '-'}
+🧑‍🎤 Género: ${datos.gender || '-'}
+👤 Ocupación: ${datos.ocupacion || '-'}
+🎶 Música: ${datos.music_genres ? datos.music_genres.join(', ') : '-'}
+⭐ Hobbies: ${datos.hobbies ? datos.hobbies.join(', ') : '-'}
+💳 Membresía: ${datos.tipo ? datos.tipo.replace('reactivacion_', '') : '-'}
+💵 Método: ${datos.metodo || '-'}
+⏰ Hora: ${new Date().toLocaleString('es-ES')}
+📢 <b>ESTADO:</b> ${estadoAccion}
+`;
+
+  await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN_ADMIN}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: TELEGRAM_CHAT_ID_ADMIN,
+      text: mensaje,
+      parse_mode: "HTML"
+    })
+  });
+}
+    // --- UTILIDADES ---
+    function capitalize(str) {
+      if (!str) return "";
+      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+    function isValidPhone(phone) {
+  // Elimina cualquier espacio y valida solo 8 dígitos numéricos
+  return /^\d{8}$/.test(phone);
+}
+   function calculateAffinity(userA, userB) {
+  let score = 0;
+  let detail = '';
+  const musicA = userA.music_genres || [];
+  const musicB = userB.music_genres || [];
+  const musicMatch = musicA.filter(g => musicB.includes(g)).length;
+  const musicTotal = Math.max(musicA.length, musicB.length, 1);
+  const musicScore = (musicMatch / musicTotal) * 25;
+
+  const hobbiesA = userA.hobbies || [];
+  const hobbiesB = userB.hobbies || [];
+  const hobbiesMatch = hobbiesA.filter(h => hobbiesB.includes(h)).length;
+  const hobbiesTotal = Math.max(hobbiesA.length, hobbiesB.length, 1);
+  const hobbiesScore = (hobbiesMatch / hobbiesTotal) * 25;
+
+  const cityScore = (userA.city && userB.city && userA.city.toLowerCase() === userB.city.toLowerCase()) ? 20 : 0;
+
+  // NUEVO: Coincidencia en localidad
+  const localidadScore = (userA.localidad && userB.localidad &&
+    userA.localidad.trim().toLowerCase() === userB.localidad.trim().toLowerCase()) ? 15 : 0;
+
+  // NUEVO: Coincidencia en ocupación (qué haces)
+  const ocupacionScore = (userA.ocupacion && userB.ocupacion &&
+    userA.ocupacion.trim().toLowerCase() === userB.ocupacion.trim().toLowerCase()) ? 15 : 0;
+
+  score = Math.round(musicScore + hobbiesScore + cityScore + localidadScore + ocupacionScore);
+
+  detail = `Coincidencias en música: ${musicMatch}, hobbies: ${hobbiesMatch}` +
+    (cityScore ? ', misma ciudad' : '') +
+    (localidadScore ? ', misma localidad' : '') +
+    (ocupacionScore ? ', misma ocupación' : '');
+
+  return { percentage: score, detail };
+}
+ // --- UI ----
+ async function showPage(pageId) {
+  // Si la página es privada y hay usuario logueado, revisa el status antes de mostrar
+  const privatePages = ['matches', 'profile'];
+  if (privatePages.includes(pageId) && appState.currentUser) {
+    const { data: perfil } = await supabaseClient.from('users').select('status').eq('id', appState.currentUser.id).single();
+     if (pageId === 'gruposVip') {
+    if (!appState.userProfile || appState.userProfile.tipo_membresia !== 'vip') {
+      alert("Solo los usuarios VIP pueden acceder a los grupos exclusivos.");
+      showPage('home');
+      return;
+    }
+  }
+    if (!perfil || perfil.status !== "aprobado") {
+      // Revisa si tiene un pago pendiente
+      const { data: pagos } = await supabaseClient
+        .from('pagos')
+        .select('*')
+        .eq('user_id', appState.currentUser.id)
+        .order('created_at', { ascending: false })
+        .limit(1);
+      if (pagos && pagos.length && pagos[0].status === "pendiente") {
+        showPage('pendientePage');
+      } else {
+        showPage('payment');
+      }
+      return;
+    }
+  }
+  if(pageId === 'reactivarCuentaSection' && !window.emailReactivar){
+  alert("Accede desde el buscador de estado de cuenta.");
+  showPage('home');
+  return;
+}
+
+  // Oculta todas las páginas y muestra la actual
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
+  document.getElementById(pageId).classList.add('active-page');
+  window.scrollTo(0, 0);
+
+  if (pageId === 'gruposVip') {
+  await cargarGruposVip();
+}
+
+   // Mostrar/ocultar buscador de estado de cuenta solo en home
+  const estadoCuentaLink = document.getElementById('estadoCuentaLink');
+  const buscadorEstadoCuenta = document.getElementById('buscadorEstadoCuenta');
+  if (estadoCuentaLink && buscadorEstadoCuenta) {
+    if (pageId === 'home') {
+      estadoCuentaLink.style.display = "";
+      buscadorEstadoCuenta.style.display = "none"; // Oculto hasta que hagan click
+    } else {
+      estadoCuentaLink.style.display = "none";
+      buscadorEstadoCuenta.style.display = "none";
+    }
+  }
+  // Lógica específica para cada página
+  if (pageId === 'matches') loadMatches();
+  else if(pageId === 'profile') loadProfile();
+  else if (pageId === 'adminPanel') loadAdminPagos();
+  else if (pageId === 'promocionesPage') cargarPromociones();
+}
+    function mostrarBotonAdmin(perfil) {
+    const adminBtn = document.getElementById('showAdminPanelBtn');
+    const esAdmin = perfil?.email?.trim().toLowerCase() === "admin1221@gmail.com";
+    console.log("DEBUG | Email perfil:", perfil?.email, "| Condición:", esAdmin);
+    if (adminBtn) {
+      adminBtn.style.display = esAdmin ? "block" : "none";
+    }
+  }
+
+    async function updateAuthUI(user) {
+  const authNav = document.getElementById('auth-nav');
+  const userNav = document.getElementById('user-nav');
+  const mainNav = document.getElementById('main-nav');
+   const userSearchBar = document.getElementById('user-search-bar');
+  if (user) {
+    // Cargar perfil para saber status, género y foto
+    const { data: perfil, error } = await supabaseClient
+      .from('users')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+      appState.userProfile = perfil;
+  mostrarBotonAdmin(perfil);
+  const adminBtn = document.getElementById('showAdminPanelBtn');
+ console.log("DEBUG | Email perfil:", perfil?.email, "| Condición:", perfil?.email?.trim().toLowerCase() === "admin1221@gmail.com");
+    if (adminBtn) {
+      if (perfil && perfil.email && perfil.email.trim().toLowerCase() === "admin1221@gmail.com") {
+        adminBtn.style.display = "block";
+      } else {
+        adminBtn.style.display = "none";
+      }
+       await loadSidebarChats();
+    }
+    // --- BLOQUEO POR STATUS ---
+    if (!perfil || perfil.status === "pendiente" || perfil.status === null) {
+      // ¿Tiene pago pendiente?
+      const { data: pagos } = await supabaseClient
+        .from('pagos')
+        .select('*')
+        .eq('user_id', perfil.id)
+        .order('created_at', { ascending: false })
+        .limit(1);
+      if (pagos && pagos.length && pagos[0].status === "pendiente") {
+        showPage('pendientePage');
+      } else {
+        showPage('payment');
+      }
+      // NO muestres menú de usuario ni matches
+      authNav.classList.remove('d-none');
+      userNav.classList.add('d-none');
+      mainNav.classList.add('d-none');
+      return;
+    }
+   
+    // --- SOLO SI ES APROBADO, MUESTRA LA APP ---
+    setThemeByGender(perfil?.gender || "femenino");
+    authNav.classList.add('d-none');
+    userNav.classList.remove('d-none');
+    mainNav.classList.remove('d-none');
+    if (userSearchBar) userSearchBar.classList.remove('d-none');
+    document.getElementById('username-display').textContent = perfil?.name || 'Usuario';
+    document.getElementById('user-avatar').src = perfil?.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(perfil?.name || 'Usuario')}&background=random`;
+    await loadChats();
+    await mostrarBotonGruposVipFlotante();
+    showPage('matches');
+  } else {
+    setThemeByGender("femenino");
+    authNav.classList.remove('d-none');
+    userNav.classList.add('d-none');
+    mainNav.classList.add('d-none');
+    if (userSearchBar) userSearchBar.classList.add('d-none');
+    showPage('home');
+  }
+}
+
+function mostrarBotonGruposVipFlotante() {
+  const vipGroupFab = document.getElementById('vipGroupFab');
+  if (!vipGroupFab || !appState.userProfile) return;
+  vipGroupFab.style.display = appState.userProfile.tipo_membresia === 'vip' ? 'flex' : 'none';
+}
+
+    // --- REGISTRO DE USUARIO ---
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const name = document.getElementById('registerName').value;
+  const email = document.getElementById('registerEmail').value;
+  const password = document.getElementById('registerPassword').value;
+  const age = parseInt(document.getElementById('registerAge').value, 10);
+  const gender = document.getElementById('registerGender').value;
+  const city = document.getElementById('registerCity').value;
+  const music = document.getElementById('registerMusic').value;
+  const hobbies = document.getElementById('registerHobbies').value;
+  const phone = document.getElementById('registerPhone').value.trim();
+  const localidad = document.getElementById('registerLocalidad').value.trim();
+  let ocupacion = '';
+  if (document.getElementById('registerEstudia').checked) ocupacion = 'Estudia';
+  if (document.getElementById('registerTrabaja').checked) ocupacion = 'Trabaja';
+  if (document.getElementById('registerAmbas').checked) ocupacion = 'Ambas';
+  const errorElement = document.getElementById('registerError');
+  if (!isValidPhone(phone)) {
+    errorElement.textContent = "El teléfono debe tener exactamente 8 dígitos y solo números.";
+    errorElement.classList.remove('d-none');
+    return;
+  }
+
+  // Normaliza géneros y hobbies aquí
+  const music_genres = music
+    .split(',')
+    .map(g => g.trim().toLowerCase())
+    .filter(g => g.length > 0);
+
+  const hobbies_arr = hobbies
+    .split(',')
+    .map(h => h.trim().toLowerCase())
+    .filter(h => h.length > 0)
+    .slice(0, 3);
+
+  try {
+    const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name, age, gender, city }
+      }
+    });
+    if (signUpError) throw signUpError;
+    const userId = signUpData.user?.id || signUpData.session?.user?.id;
+    if (!userId) throw new Error('No se pudo obtener el ID de usuario.');
+    const { error: insertError } = await supabaseClient
+      .from('users')
+      .insert([{
+        id: userId,
+        email,
+        name,
+        age,
+        gender,
+        city,
+        phone,
+        localidad,
+        ocupacion,
+        music_genres: music_genres,
+        hobbies: hobbies_arr,
+        bio: '',
+        photo_url: '',
+        status: "pendiente",
+        created_at: new Date().toISOString()
+      }]);
+    if (insertError) throw insertError;
+    showPage('payment');
+    window.lastRegisteredEmail = email;
+  } catch (error) {
+    errorElement.textContent = "el correo ya existe ";
+    errorElement.classList.remove('d-none');
+    console.error("Error en registro:", error);
+  }
+});
+// Guarda los chats "borrados" por el usuario en localStorage
+function borrarChatSoloParaMi(myId, otherId) {
+  let ocultos = JSON.parse(localStorage.getItem(`ocultos_${myId}`) || '[]');
+  if (!ocultos.includes(otherId)) ocultos.push(otherId);
+  localStorage.setItem(`ocultos_${myId}`, JSON.stringify(ocultos));
+  loadSidebarChats();
+}
+  // --- LOGIN DE USUARIO: status y acceso ---
+document.getElementById('loginForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const errorElement = document.getElementById('loginError');
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    appState.currentUser = data.user;
+    updateAuthUI(data.user);
+   
+  } catch (error) {
+    errorElement.textContent =  "ERROR AL INICIAR SECION -- comprueba credenciales y conexion";
+    errorElement.classList.remove('d-none');
+    console.error("Error en login:", error);
+  }
+});
+    // --- LOGOUT ---
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      appState.currentUser = null;
+      appState.userProfile = null;
+      updateAuthUI(null);
+    }
+
+    // --- CARGAR PERFIL DE USUARIO ---
+  async function loadProfile() {
+  const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+  if (userError || !user) return;
+  
+  const { data, error } = await supabaseClient
+    .from('users')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+  
+  if (error || !data) {
+    console.error("Error al cargar perfil:", error);
+    return;
+  }
+  
+  appState.userProfile = data;
+  document.getElementById('profileName').value = data.name || '';
+  document.getElementById('profileAge').value = data.age || '';
+  document.getElementById('profileGender').value = data.gender || 'masculino';
+  document.getElementById('profileCity').value = data.city || '';
+  document.getElementById('profileMusic').value = data.music_genres?.join(', ') || '';
+  document.getElementById('profileHobbies').value = data.hobbies?.join(', ') || '';
+  document.getElementById('profileBio').value = data.bio || '';
+  document.getElementById('profileAvatar').src = data.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || 'Usuario')}&background=random`;
+  document.getElementById('user-avatar').src = data.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || 'Usuario')}&background=random`;
+  document.getElementById('profilePhone').value = data.phone || '';
+  document.getElementById('profileLocalidad').value = data.localidad || '';
+  
+  if (data.ocupacion) {
+    document.getElementById('profileEstudia').checked = data.ocupacion === "Estudia";
+    document.getElementById('profileTrabaja').checked = data.ocupacion === "Trabaja";
+    document.getElementById('profileAmbas').checked = data.ocupacion === "Ambas";
+  }
+  const avatarUrl = data.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || 'Usuario')}&background=random`;
+  
+  document.getElementById('profileAvatar').src = avatarUrl;
+  document.getElementById('user-avatar').src = avatarUrl;
+  
+  // Asegúrate de que el tema se actualice según el género
+  setThemeByGender(data.gender || "femenino");
+}
+document.getElementById('profileForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) return;
+  const name = document.getElementById('profileName').value;
+  const age = parseInt(document.getElementById('profileAge').value, 10);
+  const gender = document.getElementById('profileGender').value;
+  const city = document.getElementById('profileCity').value;
+  const music = document.getElementById('profileMusic').value;
+  const hobbies = document.getElementById('profileHobbies').value;
+  const bio = document.getElementById('profileBio').value;
+  const phone = document.getElementById('profilePhone').value.trim();
+  const localidad = document.getElementById('profileLocalidad').value.trim();
+  let ocupacion = '';
+    if (!isValidPhone(phone)) {
+    errorElement.textContent = "El teléfono debe tener exactamente 8 dígitos y solo números.";
+    errorElement.classList.remove('d-none');
+    return;
+  }
+  if (document.getElementById('profileEstudia').checked) ocupacion = 'Estudia';
+  if (document.getElementById('profileTrabaja').checked) ocupacion = 'Trabaja';
+  if (document.getElementById('profileAmbas').checked) ocupacion = 'Ambas';
+  try {
+    const { error } = await supabaseClient
+      .from('users')
+      .update({
+        name,
+        age,
+        gender,
+        city,
+        phone,           // << NUEVO
+        localidad,       // << NUEVO
+        ocupacion,       // << NUEVO
+        music_genres: music.split(',').map(g => g.trim()),
+        hobbies: hobbies.split(',').map(h => h.trim()).slice(0, 3),
+        bio
+      })
+      .eq('id', user.id);
+    if (error) throw error;
+    await loadProfile();
+    alert('Perfil actualizado correctamente');
+  } catch (error) {
+    console.error("Error actualizando perfil:", error);
+    alert('Error al actualizar el perfil');
+  }
+});
+ //FOTO DE PERFIL
+async function compressImage(file, maxWidth = 600, quality = 0.8) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale = Math.min(maxWidth / img.width, maxWidth / img.height);
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        canvas.toBlob((blob) => {
+          resolve(new File([blob], file.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          }));
+        }, 'image/jpeg', quality);
+      };
+    };
+    reader.readAsDataURL(file);
+  });
+}
+  //SUBIR FOTOS DE PERFIL
+async function uploadProfileImage(userId, file) {
+  try {
+    // Genera un nombre único para el archivo
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${userId}-${Date.now()}.${fileExt}`;
+    
+    // Sube el archivo comprimido
+    const { data, error } = await supabaseClient
+      .storage
+      .from('profile-pictures')
+      .upload(fileName, file);
+    
+    if (error) throw error;
+    
+    // Obtiene la URL pública
+    const { data: { publicUrl } } = supabaseClient
+      .storage
+      .from('profile-pictures')
+      .getPublicUrl(fileName);
+    
+    return publicUrl;
+  } catch (error) {
+    console.error('Error al subir imagen:', error);
+    throw error;
+  }
+}
+//MANEJO DE FOTO DE PERFIL
+document.getElementById('uploadBtn').addEventListener('click', () => {
+  document.getElementById('avatarUpload').click();
+});
+
+document.getElementById('avatarUpload').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  // Validaciones
+  if (!file.type.match('image.*')) {
+    alert('Solo se permiten imágenes (JPEG, PNG, WebP)');
+    return;
+  }
+  
+  if (file.size > 2 * 1024 * 1024) {
+    alert('La imagen debe ser menor a 2MB');
+    return;
+  }
+  
+  try {
+    showLoader();
+    
+    // Comprime la imagen antes de subir
+    const compressedFile = await compressImage(file);
+    
+    // Sube a Supabase Storage
+    const imageUrl = await uploadProfileImage(appState.currentUser.id, compressedFile);
+    
+    // Actualiza el perfil del usuario
+    const { error } = await supabaseClient
+      .from('users')
+      .update({ photo_url: imageUrl })
+      .eq('id', appState.currentUser.id);
+    
+    if (!error) {
+      // Actualiza la vista
+      document.getElementById('profileAvatar').src = imageUrl;
+      document.getElementById('user-avatar').src = imageUrl;
+      alert('Foto de perfil actualizada con éxito!');
+    }
+  } catch (error) {
+    alert('Error al actualizar la foto: ' + error.message);
+  } finally {
+    hideLoader();
+    e.target.value = ''; // Limpia el input
+  }
+});
+
+    // --- CARGA DE MATCHES ---
+    window.matchesDescartados = window.matchesDescartados || [];
+
+async function loadMatches() {
+  if (!appState.currentUser) return;
+  const userId = appState.currentUser.id;
+  if (!userId) return;
+
+  const { data: userData } = await supabaseClient
+    .from('users').select('*').eq('id', userId).single();
+  if (!userData) return;
+
+  const { data: users } = await supabaseClient.from('users').select('*');
+  if (!users) return;
+
+  const matchesDiv = document.getElementById('matchesList');
+  matchesDiv.innerHTML = '';
+
+  // Filtra matches válidos (que no estén descartados)
+  const posibles = users.filter(other => {
+    if (other.id === userId) return false;
+    if (window.matchesDescartados.includes(other.id)) return false;
+    const userGender = (userData.gender || '').toLowerCase();
+    const otherGender = (other.gender || '').toLowerCase();
+    if (
+      (userGender === "masculino" && otherGender === "femenino") ||
+      (userGender === "femenino" && otherGender === "masculino")
+    ) {
+      const affinity = calculateAffinity(userData, other);
+      return affinity.percentage >= 30;
+    }
+    return false;
+  });
+
+  // Solo los primeros 5 matches disponibles
+  const toShow = posibles.slice(0, 5);
+
+  if (toShow.length === 0) {
+    matchesDiv.innerHTML = `<div class="alert alert-info">No hay más matches para mostrar.</div>`;
+    return;
+  }
+
+ toShow.forEach(other => {
+    const affinity = calculateAffinity(userData, other);
+    const esVip = other.tipo_membresia === 'vip'; // <-- NUEVO: detecta si el otro usuario es VIP
+    const card = document.createElement('div');
+    card.className = 'col-md-6 col-lg-4';
+    card.innerHTML = `
+      <div class="card match-card position-relative ${esVip ? 'vip-card' : ''}">
+        <button 
+          class="btn btn-light btn-sm position-absolute" 
+          style="top: 8px; right: 8px; z-index: 2;" 
+          onclick="descartarMatch('${other.id}')">
+          <i class="fas fa-times"></i>
+        </button>
+        ${esVip ? '<span class="vip-badge"><i class="fas fa-crown"></i> VIP</span>' : ''}
+        <span class="card-heart"><i class="fas fa-heart"></i></span>
+        <div class="card-body text-center">
+          <img src="${other.photo_url ? other.photo_url : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(other.name) + '&background=random'}" alt="Perfil" class="profile-img mb-3">
+          <h5 class="card-title mb-2">${other.name}</h5>
+          <div class="mb-2"><span class="badge-affinity"><i class="fas fa-heart"></i> ${affinity.percentage}% Afinidad</span></div>
+          <div class="mb-2">
+            <span class="badge-affinity"><i class="fas fa-venus-mars"></i> ${capitalize(other.gender || '')}</span>
+            ${other.city ? `<span class="badge-affinity"><i class="fas fa-map-marker-alt"></i> ${other.city}</span>` : ''}
+          </div>
+          <div class="mb-2">
+            ${other.music_genres && other.music_genres.length ? `<span class="badge-affinity"><i class="fas fa-music"></i> ${other.music_genres.join(', ')}</span>` : ''}
+          </div>
+          <div class="mb-2">
+            ${other.hobbies && other.hobbies.length ? `<span class="badge-affinity"><i class="fas fa-star"></i> ${other.hobbies.join(', ')}</span>` : ''}
+          </div>
+          <div class="affinity-detail">${affinity.detail}</div>
+          <button class="btn btn-gradient open-chat-btn" onclick="abrirChatMatch('${userId}','${other.id}')"><i class="fas fa-comments"></i> Chatear</button>
+        </div>
+      </div>
+    `;
+    matchesDiv.appendChild(card);
+});
+}
+
+// Función para descartar un match y recargar la vista
+function descartarMatch(userIdMatch) {
+  window.matchesDescartados = window.matchesDescartados || [];
+  window.matchesDescartados.push(userIdMatch);
+  loadMatches();
+}
+    //funcion del loguin
+    function showLoader() {
+  document.getElementById('globalLoader').style.display = 'flex';
+}
+function hideLoader() {
+  document.getElementById('globalLoader').style.display = 'none';
+}
+    // --- PANEL DE CHATS ---
+   // Saber si ya bloqueaste a esa persona
+async function yaBloqueado(bloqueador_id, bloqueado_id) {
+  const { data } = await supabaseClient
+    .from('bloqueos')
+    .select('id')
+    .eq('bloqueador_id', bloqueador_id)
+    .eq('bloqueado_id', bloqueado_id)
+    .maybeSingle();
+  return data !== null;
+}
+
+// Header de chat con menú ⋮ (llámala siempre después de abrir un chat)
+async function setChatHeader(miUid, otroUid) {
+  const { data: user } = await supabaseClient
+    .from('users')
+    .select('name, photo_url')
+    .eq('id', otroUid)
+    .single();
+  const chatHeader = document.getElementById('chatHeader');
+  if (!user) {
+    chatHeader.innerHTML = `<span>Usuario</span>`;
+    return;
+  }
+  const yaBloq = await yaBloqueado(miUid, otroUid);
+  const accion = yaBloq ? "Desbloquear" : "Bloquear";
+  const icono = yaBloq ? "fa-unlock" : "fa-ban";
+  const idBtn = yaBloq ? "desbloquearChatBtn" : "bloquearChatBtn";
+  const avatar = user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'Usuario')}&background=random`;
+  chatHeader.innerHTML = `
+    <img src="${avatar}" width="40" height="40" class="rounded-circle" />
+    <span style="font-weight:bold;font-size:1.1em;">${user.name}</span>
+    <div class="dropdown ms-auto" id="chat-options-dropdown">
+      <button class="btn btn-link text-dark" type="button" id="chatOptionsBtn" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.5em;">
+        <i class="fas fa-ellipsis-v"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="chatOptionsBtn">
+        <li><a class="dropdown-item text-danger" href="#" id="vaciarChatBtn"><i class="fas fa-trash"></i> Vaciar chat</a></li>
+        <li><a class="dropdown-item text-danger" href="#" id="${idBtn}"><i class="fas ${icono}"></i> ${accion}</a></li>
+      </ul>
+    </div>
+  `;
+}
+function setThemeByGender(gender) {
+  const body = document.body;
+  if (gender === "femenino") {
+    body.style.backgroundColor = "#ffe8f3";
+  } else if (gender === "masculino") {
+    body.style.backgroundColor = "#e8f0ff";
+  } else {
+    body.style.backgroundColor = "";
+  }
+}
+// Guarda la fecha del último mensaje recibido de ese usuario como "leído"
+async function marcarMensajesLeidos(miUid, otroUid) {
+  const { data: mensajes } = await supabaseClient
+    .from('chats')
+    .select('created_at')
+    .or(`and(sender_id.eq.${otroUid},receiver_id.eq.${miUid})`)
+    .order('created_at', { ascending: false })
+    .limit(1);
+
+  if (mensajes && mensajes.length) {
+    const lastReceived = mensajes[0].created_at;
+    localStorage.setItem(`lastRead_${miUid}_${otroUid}`, lastReceived);
+  }
+}
+// Función para abrir un chat. Llama a setChatHeader justo después de obtener los UIDs
+// Abre el chat modal, marca mensajes como leídos y actualiza el sidebar
+async function abrirChatMatch(miUid, otroUid) {
+  const isSupportChat = otroUid === ADMIN_USER_ID;
+  document.getElementById('myUid').value = miUid;
+  document.getElementById('otherUid').value = otroUid;
+
+  if (isSupportChat) {
+    document.getElementById('chatHeader').innerHTML = `
+      <div class="d-flex align-items-center">
+        <i class="fas fa-headset me-2" style="font-size: 1.5em;"></i>
+        <span style="font-weight:bold;font-size:1.1em;">Soporte Técnico</span>
+      </div>
+    `;
+  } else {
+    await setChatHeader(miUid, otroUid);
+  }
+
+  if (!chatModalInstance) {
+    chatModalInstance = new bootstrap.Modal(document.getElementById('chatModal'));
+  }
+  chatModalInstance.show();
+
+  await marcarMensajesLeidos(miUid, otroUid); // Marca mensajes como leídos
+  await cargarMensajes();                     // Carga los mensajes en la ventana
+  await loadSidebarChats();                   // Actualiza los badges de no leídos (sidebar)
+}
+
+// Listener universal para los botones del menú ⋮
+document.addEventListener('click', async function(e) {
+  // Vaciar chat
+  if (e.target && e.target.id === 'vaciarChatBtn') {
+    e.preventDefault();
+    if (confirm("¿Seguro que quieres vaciar este chat? Esta acción no se puede deshacer.")) {
+      await vaciarChat();
+      await cargarMensajes();
+    }
+  }
+  // Bloquear
+  if (e.target && e.target.id === 'bloquearChatBtn') {
+    e.preventDefault();
+    if (confirm("¿Seguro que quieres bloquear a este usuario?")) {
+      await bloquearUsuario();
+      alert("Ya no te molestará más. Has bloqueado este perfil.");
+      await setChatHeader(document.getElementById('myUid').value, document.getElementById('otherUid').value);
+      await cargarMensajes();
+    }
+  }
+  // Desbloquear
+  if (e.target && e.target.id === 'desbloquearChatBtn') {
+    e.preventDefault();
+    if (confirm("¿Seguro que quieres desbloquear a este usuario?")) {
+      await desbloquearUsuario();
+      alert("Has desbloqueado a este perfil.");
+      await setChatHeader(document.getElementById('myUid').value, document.getElementById('otherUid').value);
+      await cargarMensajes();
+    }
+  }
+});
+
+// Función para vaciar un chat
+async function vaciarChat() {
+  const myUid = document.getElementById('myUid').value.trim();
+  const otherUid = document.getElementById('otherUid').value.trim();
+  const { error } = await supabaseClient
+    .from('chats')
+    .delete()
+    .or(`and(sender_id.eq.${myUid},receiver_id.eq.${otherUid}),and(sender_id.eq.${otherUid},receiver_id.eq.${myUid})`);
+  if (error) {
+    alert("Error al vaciar el chat: " + error.message);
+  }
+}
+
+// Bloquear y desbloquear
+async function bloquearUsuario() {
+  const bloqueador_id = document.getElementById('myUid').value.trim();
+  const bloqueado_id = document.getElementById('otherUid').value.trim();
+  if (!bloqueador_id || !bloqueado_id) return;
+  await supabaseClient
+    .from('bloqueos')
+    .insert([{ bloqueador_id, bloqueado_id }]);
+}
+async function desbloquearUsuario() {
+  const bloqueador_id = document.getElementById('myUid').value.trim();
+  const bloqueado_id = document.getElementById('otherUid').value.trim();
+  if (!bloqueador_id || !bloqueado_id) return;
+  await supabaseClient
+    .from('bloqueos')
+    .delete()
+    .eq('bloqueador_id', bloqueador_id)
+    .eq('bloqueado_id', bloqueado_id);
+}
+
+    async function loadChats() {
+      if (!appState.currentUser) return;
+      const userId = appState.currentUser.id;
+      // Asegúrate que 'created_at' es el campo de fecha en tu tabla 'chats'
+      const { data: chats, error } = await supabaseClient
+        .from('chats')
+        .select('sender_id,receiver_id,content,created_at,deleted')
+        .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
+        .order('created_at', { ascending: false });
+
+      
+    }
+    async function enviarMensaje() {
+  const sender_id = document.getElementById('myUid').value.trim();
+  const receiver_id = document.getElementById('otherUid').value.trim();
+  const content = document.getElementById('msgInput').value.trim();
+  if (!sender_id || !receiver_id || !content) {
+    alert("Completa los campos y el mensaje");
+    return;
+  }
+  const now = new Date().toISOString();
+  const { error } = await supabaseClient.from('chats').insert([{
+    sender_id,
+    receiver_id,
+    content: content,
+    created_at: now,
+    deleted: false
+  }]);
+  if (error) {
+    document.getElementById('chatDebug').textContent = "Error: " + error.message;
+  } else {
+    document.getElementById('msgInput').value = '';
+    await cargarMensajes();;
+    await loadSidebarChats
+    await marcarMensajesLeidos(miUid, otroUid); // <-- AÑADE ESTA LÍNEA
+    await cargarMensajes();
+  }
+}
+let lastChatDump = '';
+
+async function cargarMensajes() {
+  const myUid = document.getElementById('myUid').value.trim();
+  const otherUid = document.getElementById('otherUid').value.trim();
+  const messagesDiv = document.getElementById('messages');
+  if (!myUid || !otherUid) {
+    messagesDiv.innerHTML = "<div class='sinMensajes'>No hay usuarios seleccionados.</div>";
+    return;
+  }
+  const { data: mensajes, error } = await supabaseClient
+    .from('chats')
+    .select('id,sender_id,receiver_id,content,created_at')
+    .or(`and(sender_id.eq.${myUid},receiver_id.eq.${otherUid}),and(sender_id.eq.${otherUid},receiver_id.eq.${myUid})`)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    messagesDiv.innerHTML = `<div class='advertencia'>Error cargando mensajes: ${error.message}</div>`;
+    return;
+  }
+  if (!mensajes || mensajes.length === 0) {
+    messagesDiv.innerHTML = "<div class='sinMensajes'>No hay mensajes aún.</div>";
+    lastChatDump = '';
+    return;
+  }
+
+  const chatDump = JSON.stringify(mensajes);
+  if (chatDump === lastChatDump) return;
+  lastChatDump = chatDump;
+
+  messagesDiv.innerHTML = '';
+  mensajes.forEach(msg => {
+    const isMine = msg.sender_id === myUid;
+    const clase = isMine ? 'msg-bubble mine' : 'msg-bubble theirs';
+    const hora = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    messagesDiv.innerHTML += `
+      <div class="${clase}" data-id="${msg.id}" style="position:relative;user-select:none;">
+        <div class="msg-content">${msg.content}</div>
+        <div class="msg-meta">${hora}</div>
+      </div>
+    `;
+  });
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function handleLongPressStart(e) {
+  const msgDiv = e.target.closest('.msg-bubble.mine');
+  if (!msgDiv) return;
+  const msgId = msgDiv.getAttribute('data-id');
+  if (!msgId) return;
+  longPressTimer = setTimeout(() => {
+    borrarMensaje(msgId);
+  }, 650);
+}
+// --- MODAL DE FELICITACIÓN ---
+function showCongratsModal(gender) {
+  if(congratsShown) return;
+  congratsShown = false;
+  const congratsTitle = document.getElementById('congratsTitle');
+  if (gender === "femenino") {
+    congratsTitle.textContent = "¡Felicidades, eres una afortunada!";
+  } else if (gender === "masculino") {
+    congratsTitle.textContent = "¡Felicidades, eres un tanke!";
+  } else {
+        congratsTitle.textContent = "¡Felicidades!";
+      }
+      const heartsContainer = document.getElementById('hearts-container');
+      heartsContainer.innerHTML = '';
+      for(let i=0; i<12; i++) {
+        setTimeout(() => {
+          const heart = document.createElement('span');
+          heart.className = 'fa fa-heart heart-float';
+          heart.style.left = Math.random()*80 + 10 + '%';
+          heart.style.color = ['#ff5a8a','#ffb6d2','#985cff'][Math.floor(Math.random()*3)];
+          heart.style.fontSize = (Math.random()*1.2+1)+'em';
+          heartsContainer.appendChild(heart);
+          setTimeout(()=>heart.remove(), 1800);
+        }, i*110);
+      }
+      if (!congratsInstance) {
+        congratsInstance = new bootstrap.Modal(document.getElementById('congratsModal'));
+}
+congratsInstance.show();
+    }
+
+    // --- OBSERVADOR DE AUTENTICACIÓN ---
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session && session.user) {
+        appState.currentUser = session.user;
+        loadProfile();
+        updateAuthUI(session.user);
+      } else {
+        appState.currentUser = null;
+        appState.userProfile = null;
+        updateAuthUI(null);
+      }
+    });
+  
+// --- Panel ADMIN ---
+async function loadAdminPagos() {
+  const pagosDiv = document.getElementById('adminPagosList');
+  pagosDiv.innerHTML = 'Cargando pagos...';
+
+  // 1. Pagos pendientes
+  const { data: pagosPendientes, error: errorPendientes } = await supabaseClient
+    .from('pagos')
+    .select('*, users(name, email, status, expires_at)')
+    .eq('status', 'pendiente')
+    .order('created_at', { ascending: false });
+
+  // 2. Pagos en espera
+  const { data: pagosEnEspera, error: errorEnEspera } = await supabaseClient
+    .from('pagos')
+    .select('*, users(name, email, status, expires_at)')
+    .eq('status', 'en_espera')
+    .order('created_at', { ascending: false });
+
+  if (errorPendientes || errorEnEspera) {
+    pagosDiv.innerHTML = 'Error al cargar pagos';
+    return;
+  }
+
+  // Separa primer pago y reactivación
+  const pagosPrimerPago = (pagosPendientes || []).filter(p => !(p.tipo && p.tipo.startsWith('reactivacion')));
+  const pagosReactivacion = (pagosPendientes || []).filter(p => p.tipo && p.tipo.startsWith('reactivacion'));
+
+  // Opciones de formato de fecha
+  const opcionesFecha = {
+    timeZone: "America/Havana",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  };
+
+  // Auxiliar para renderizar tabla
+  const renderTabla = (titulo, lista, tipo) => `
+    <h5 class="mt-4 mb-2">${titulo}</h5>
+    ${
+      lista.length === 0
+      ? '<div class="alert alert-secondary">No hay solicitudes.</div>'
+      : `<table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Email</th>
+              <th>Membresía</th>
+              <th>Teléfono</th>
+              <th>Método de pago</th>
+              <th>Fecha</th>
+              <th>Status</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${lista.map(p => `
+              <tr>
+                <td>${p.users?.name || ''}</td>
+                <td>${p.users?.email || ''}</td>
+                <td>${p.tipo.replace('reactivacion_', '')}</td>
+                <td>${p.phone || ''}</td>
+                <td>${p.metodo ? p.metodo.charAt(0).toUpperCase() + p.metodo.slice(1) : ''}</td>
+                <td>${new Date(p.created_at).toLocaleString("es-CU", opcionesFecha)}</td>
+                <td>${p.status}</td>
+                <td>
+                  ${
+                    tipo === 'primer_pago' || tipo === 'reactivacion'
+                    ? `<button class="btn btn-success btn-sm mb-1" onclick="aprobarPago('${p.id}', '${p.user_id}', this)">Aprobar</button>
+                       <button class="btn btn-warning btn-sm mb-1" onclick="pausarPago('${p.id}', this)">Pausar</button>
+                       <button class="btn btn-danger btn-sm mb-1" onclick="eliminarUsuario('${p.user_id}', this)">Eliminar</button>`
+                    : `<button class="btn btn-success btn-sm mb-1" onclick="aprobarPago('${p.id}', '${p.user_id}', this)">Aprobar</button>
+                       <button class="btn btn-danger btn-sm mb-1" onclick="eliminarUsuario('${p.user_id}', this)">Eliminar</button>`
+                  }
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`
+    }
+  `;
+
+  pagosDiv.innerHTML =
+    renderTabla('Solicitan aprobación (primer pago/nunca activados)', pagosPrimerPago, 'primer_pago') +
+    renderTabla('Solicitan reactivación', pagosReactivacion, 'reactivacion') +
+    renderTabla('Pagos en espera', pagosEnEspera || [], 'en_espera');
+}
+async function aprobarPago(pagoId, userId, btn) {
+  if (!confirm("¿Aprobar este pago?")) return;
+
+  // Marca el pago como aprobado
+  await supabaseClient.from('pagos').update({ status: 'aprobado' }).eq('id', pagoId);
+
+  // Obtén la hora segura de Cuba
+  const cubaNow = await getCubaDate();
+  if (!cubaNow) {
+    alert("No se pudo obtener la hora oficial de Cuba. Intenta de nuevo.");
+    return;
+  }
+  const nuevaExpiracion = new Date(cubaNow.getTime() + 30*24*60*60*1000).toISOString();
+
+  // ===> PRIMERO OBTÉN EL PAGO <===
+  const { data: pago } = await supabaseClient.from('pagos').select('*').eq('id', pagoId).single();
+
+  // Actualiza usuario: status aprobado y nueva expiración
+  await supabaseClient
+    .from('users')
+    .update({ status: 'aprobado', expires_at: nuevaExpiracion, tipo_membresia: pago.tipo.replace('reactivacion_', '') })
+    .eq('id', userId);
+
+  // OBTÉN DATOS DE USUARIO Y NOTIFICA POR TELEGRAM
+  const { data: usuario } = await supabaseClient.from('users').select('*').eq('id', userId).single();
+  if (usuario && pago) {
+    await enviarComprobanteAdminTelegram({ ...pago, ...usuario }, 'Su cuenta fue activada');
+  }
+
+  // Elimina la fila del DOM sin recargar toda la tabla
+  if (btn && btn.closest('tr')) {
+    btn.closest('tr').remove();
+  }
+
+  alert('Pago aprobado, usuario activado!');
+}
+// --- Lógica de pago ---
+// ----- PRIMER PAGO TRANFERENCIA -----
+function seleccionaMembresia(tipo) {
+  membresiaSeleccionada = tipo;
+  document.getElementById('seleccionMetodoPagoPago1').style.display = "block";
+  document.getElementById('paymentStep2Pago1').style.display = "none";
+  // Solo intenta limpiar si el elemento existe
+  var statusDiv = document.getElementById('paymentStatusPago1');
+  if (statusDiv) statusDiv.innerHTML = "";
+}
+function seleccionaMetodoPagoPago1(metodo) {
+  metodoPagoSeleccionado = metodo;
+  document.getElementById('seleccionMetodoPagoPago1').style.display = 'none';
+  document.getElementById('paymentStep2Pago1').style.display = '';
+  document.getElementById('pagoTransferenciaPago1').style.display = metodo === 'transferencia' ? '' : 'none';
+  document.getElementById('pagoSaldoPago1').style.display = metodo === 'saldo' ? '' : 'none';
+}
+
+function seleccionaMembresia(tipo) {
+  membresiaSeleccionada = tipo;
+  document.getElementById('seleccionMetodoPagoPago1').style.display = "block";
+  document.getElementById('paymentStep2Pago1').style.display = "none";
+  // Ya no intentes limpiar 'paymentStatusPago1', no existe en HTML
+}
+
+function enviarPago() {
+  var phone = document.getElementById('userPhonePago1Transferencia').value.trim();
+   var phonePago = phone;
+     if (!isValidPhone(phone)) {
+    statusDiv.innerHTML = '<div class="alert alert-danger">El teléfono debe tener exactamente 8 dígitos y solo números.</div>';
+    return;
+  }
+  var statusDiv = document.getElementById('paymentStatusPago1Transferencia');
+  statusDiv.innerText = '';
+  if (!phone || !membresiaSeleccionada) {
+    statusDiv.innerHTML = '<div class="alert alert-danger">Completa tu número y selecciona membresía.</div>';
+    return;
+  }
+  var lastEmail = window.lastRegisteredEmail || (document.getElementById('registerEmail') ? document.getElementById('registerEmail').value.trim() : null);
+  if (!lastEmail) {
+    statusDiv.innerHTML = '<div class="alert alert-danger">No se detectó email de usuario. Regístrate primero.</div>';
+    return;
+  }
+  // GUARDA EL VALOR ANTES DE LIMPIARLO
+  var membresiaParaTelegram = membresiaSeleccionada;
+
+  supabaseClient
+    .from('users')
+    .select('id')
+    .eq('email', lastEmail)
+    .limit(1)
+    .then(function(result) {
+      var users = result.data;
+      if (!users || !users.length) {
+        statusDiv.innerHTML = '<div class="alert alert-danger">Error: usuario no encontrado.</div>';
+        return;
+      }
+      var user_id = users[0].id;
+      supabaseClient
+        .from('pagos')
+        .insert([{
+          user_id: user_id,
+          phone: phone,
+          tipo: membresiaParaTelegram,
+          status: 'pendiente',
+          metodo: metodoPagoSeleccionado // "transferencia"
+        }])
+        .then(function(insertResult) {
+          if (insertResult.error) {
+            statusDiv.innerHTML = '<div class="alert alert-danger">Error al guardar pago.</div>';
+            return;
+          }
+          statusDiv.innerHTML = '<div class="alert alert-success">Pago notificado. Espera aprobación para activar tu cuenta.</div>';
+          document.getElementById('userPhonePago1Transferencia').value = '';
+          membresiaSeleccionada = "";
+
+          // --- ENVÍA COMPROBANTE A TELEGRAM ---
+        supabaseClient.from('users').select('*').eq('id', user_id).single().then(({ data: usuario }) => {
+          if (usuario) {
+            enviarComprobanteTelegram({
+          ...usuario,
+          tipo:membresiaParaTelegram,
+          metodo: metodoPagoSeleccionado,
+          whatsapp_pago: phonePago
+              
+        });
+      }
+       membresiaSeleccionada = "";
+    });
+        });
+    });
+}
+
+function enviarPagoSaldo() {
+  var phoneInput = document.getElementById('userPhonePago1Saldo');
+  var phonePago = phoneInput.value.trim();
+  var statusDiv = document.getElementById('paymentStatusPago1Saldo');
+  if (!phoneInput) {
+    alert('No se encontró el campo de teléfono (userPhonePago1Saldo).');
+    if(statusDiv) statusDiv.innerHTML = '<div class="alert alert-danger">Error interno: input no encontrado.</div>';
+    return;
+  }
+  var phone = phoneInput.value.trim();
+  if (statusDiv) statusDiv.innerText = '';
+  if (!phone || !membresiaSeleccionada) {
+    if(statusDiv) statusDiv.innerHTML = '<div class="alert alert-danger">Completa tu número y selecciona membresía.</div>';
+    return;
+  }
+  var lastEmail = window.lastRegisteredEmail || (document.getElementById('registerEmail') ? document.getElementById('registerEmail').value.trim() : null);
+  if (!lastEmail) {
+    if(statusDiv) statusDiv.innerHTML = '<div class="alert alert-danger">Error: usuario no encontrado (email vacío).</div>';
+    return;
+  }
+   // <<<< GUARDA LA MEMBRESÍA ANTES DE LIMPIAR
+  var membresiaParaTelegram = membresiaSeleccionada;
+  supabaseClient
+    .from('users')
+    .select('id')
+    .eq('email', lastEmail)
+    .limit(1)
+    .then(function(result) {
+      var users = result.data;
+      if (!users || !users.length) {
+        if(statusDiv) statusDiv.innerHTML = '<div class="alert alert-danger">Error: usuario no encontrado.</div>';
+        return;
+      }
+      var user_id = users[0].id;
+      supabaseClient
+        .from('pagos')
+        .insert([{
+          user_id: user_id,
+          phone: phone,
+          tipo: membresiaParaTelegram,
+          status: 'pendiente',
+          metodo: 'saldo'
+        }])
+        .then(function(insertResult) {
+          if (!insertResult || insertResult.error) {
+            if(statusDiv) statusDiv.innerHTML = '<div class="alert alert-danger">Error al guardar pago.</div>';
+            return;
+          }
+          if(statusDiv) statusDiv.innerHTML = '<div class="alert alert-success">Pago notificado. Espera aprobación para activar tu cuenta.</div>';
+          phoneInput.value = '';
+          membresiaSeleccionada = "";
+
+          // --- ENVÍA COMPROBANTE A TELEGRAM ---
+      supabaseClient.from('users').select('*').eq('id', user_id).single().then(({ data: usuario }) => {
+        if (usuario) {
+          enviarComprobanteTelegram({
+            ...usuario,
+          tipo:membresiaParaTelegram,
+          metodo: 'saldo',
+          whatsapp_pago: phonePago    
+      });
+    }
+     membresiaSeleccionada = "";
+  });
+        });
+    })
+    .catch(function(err) {
+      if(statusDiv) statusDiv.innerHTML = '<div class="alert alert-danger">Error inesperado (ver consola).</div>';
+      alert("Error inesperado: "+err.message);
+      console.error(err);
+    });
+}
+// ----- REACTIVACIÓN DE CUENTA -----
+function reactivarCuenta(email) {
+  window.emailReactivar = email;
+  showPage('reactivarCuentaSection');
+  document.getElementById('buscadorEstadoCuenta').style.display = 'none';
+  // Mostrar las tarjetas de membresía, ocultar pasos siguientes
+  document.getElementById('seleccionMetodoPagoReactivar').style.display = 'none';
+  document.getElementById('paymentStep2Reactivar').style.display = 'none';
+  document.getElementById('reactivarPhone').value = '';
+  document.getElementById('reactivarStatus').innerHTML = '';
+  membresiaSeleccionadaReactivar = "";
+  metodoPagoSeleccionadoReactivar = null;
+}
+
+function seleccionaMembresiaReactivar(tipo) {
+  membresiaSeleccionadaReactivar = tipo;
+  document.getElementById('seleccionMetodoPagoReactivar').style.display = 'block';
+  document.getElementById('paymentStep2Reactivar').style.display = 'none';
+}
+
+function seleccionaMetodoPagoReactivar(metodo) {
+  metodoPagoSeleccionadoReactivar = metodo;
+  document.getElementById('seleccionMetodoPagoReactivar').style.display = 'none';
+  document.getElementById('paymentStep2Reactivar').style.display = 'block';
+  document.getElementById('pagoTransferenciaReactivar').style.display = metodo === 'transferencia' ? 'block' : 'none';
+  document.getElementById('pagoSaldoReactivar').style.display = metodo === 'saldo' ? 'block' : 'none';
+}
+//RECTIVACION TRANFERENCIA
+async function enviarPagoReactivacion() {
+  const phone = document.getElementById('reactivarPhone').value.trim();
+  const phonePago = phone;
+    if (!isValidPhone(phone)) {
+    errorElement.textContent = "El teléfono debe tener exactamente 8 dígitos y solo números.";
+    const statusDiv = document.getElementById('reactivarStatus');
+    return;
+  }
+  const statusDiv = document.getElementById('reactivarStatus');
+  statusDiv.innerText = '';
+  const email = window.emailReactivar;
+  if (!phone || !email || !membresiaSeleccionadaReactivar) {
+    statusDiv.innerHTML = '<div class="alert alert-danger">Completa tu número, selecciona membresía y método de pago.</div>';
+    return;
+  }
+   // <<<< GUARDA LA MEMBRESÍA ANTES DE LIMPIAR
+  var membresiaParaTelegram = membresiaSeleccionadaReactivar;
+  // Busca el usuario por email
+  const { data: users } = await supabaseClient
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .limit(1);
+  if (!users || !users.length) {
+    statusDiv.innerHTML = '<div class="alert alert-danger">Error: usuario no encontrado.</div>';
+    return;
+  }
+  const user_id = users[0].id;
+  // Inserta el pago "pendiente" (tipo: membresía seleccionada)
+  const { error } = await supabaseClient
+  .from('pagos')
+  .insert([{
+    user_id,
+    phone,
+    tipo:'reactivacion_' + membresiaParaTelegram,
+    status: 'pendiente',
+    metodo: metodoPagoSeleccionadoReactivar // <-- así se guarda el método
+  }]);
+  if (error) {
+    statusDiv.innerHTML = '<div class="alert alert-danger">Error al guardar pago.</div>';
+    return;
+  }
+  statusDiv.innerHTML = '<div class="alert alert-success">¡Pago notificado! Cuando lo aprueben, tu cuenta será reactivada y te avisaremos por email o WhatsApp.</div>';
+  document.getElementById('reactivarPhone').value = '';
+  window.emailReactivar = null;
+  membresiaSeleccionadaReactivar = "";
+
+  // --- ENVÍA COMPROBANTE A TELEGRAM ---
+const { data: usuario } = await supabaseClient
+  .from('users')
+  .select('*')
+  .eq('id', user_id)
+  .single();
+
+if (usuario) {
+  enviarComprobanteTelegram({
+    ...usuario,
+    tipo:membresiaParaTelegram,
+    metodo: metodoPagoSeleccionadoReactivar,
+    whatsapp_pago: phonePago
+  });
+}
+ membresiaSeleccionada = "";
+}
+//REACTIVACION SALDO
+function enviarPagoSaldoReactivar() {
+  var phone = document.getElementById('reactivarPhoneSaldo').value.trim();
+  var phonePago = phone;
+    if (!isValidPhone(phone)) {
+    statusDiv.innerHTML = '<div class="alert alert-danger">El teléfono debe tener exactamente 8 dígitos y solo números.</div>';
+    return;
+  }
+  var statusDiv = document.getElementById('paymentStatusSaldoReactivar');
+  statusDiv.innerText = '';
+  var email = window.emailReactivar;
+  if (!phone || !email || !membresiaSeleccionadaReactivar) {
+    statusDiv.innerHTML = '<div class="alert alert-danger">Completa tu número, selecciona membresía y método de pago.</div>';
+    return;
+  }
+   // <<<< GUARDA LA MEMBRESÍA ANTES DE LIMPIAR
+  var membresiaParaTelegram = membresiaSeleccionadaReactivar;
+  // Busca el usuario por email
+  supabaseClient
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .limit(1)
+    .then(function(result) {
+      var users = result.data;
+      if (!users || !users.length) {
+        statusDiv.innerHTML = '<div class="alert alert-danger">Error: usuario no encontrado.</div>';
+        return;
+      }
+      var user_id = users[0].id
+      // Inserta el pago "pendiente"
+      supabaseClient
+        .from('pagos')
+        .insert([{
+          user_id: user_id,
+          phone: phone,
+          tipo: 'reactivacion_' + membresiaParaTelegram,
+          status: 'pendiente',
+          metodo: 'saldo'
+        }])
+        .then(function(insertResult) {
+          if (insertResult.error) {
+            statusDiv.innerHTML = '<div class="alert alert-danger">Error al guardar pago.</div>';
+            return;
+          }
+          statusDiv.innerHTML = '<div class="alert alert-success">¡Pago notificado! Cuando lo aprueben, tu cuenta será reactivada y te avisaremos por email o WhatsApp.</div>';
+          document.getElementById('reactivarPhoneSaldo').value = '';
+          window.emailReactivar = null;
+          membresiaSeleccionadaReactivar = "";
+
+          // --- ENVÍA COMPROBANTE A TELEGRAM ---
+          supabaseClient.from('users').select('*').eq('id', user_id).single().then(({ data: usuario }) => {
+          if (usuario) {
+            enviarComprobanteTelegram({
+              ...usuario,
+          tipo:membresiaParaTelegram,
+          metodo: 'saldo',
+          whatsapp_pago: phonePago  
+        });
+      }
+       membresiaSeleccionada = "";
+    });
+        });
+    });
+}
+//modal del buscador
+const input = document.getElementById('profileSearchInput');
+const autocompleteList = document.getElementById('autocompleteList');
+
+input.addEventListener('input', async function() {
+  const query = this.value.trim();
+  if (query.length < 2) {
+    autocompleteList.innerHTML = '';
+    return;
+  }
+  const { data: users, error } = await supabaseClient
+    .from('users')
+    .select('id, name, photo_url, gender')
+    .ilike('name', `%${query}%`)
+    .limit(5);
+  if (error || !users.length) {
+    autocompleteList.innerHTML = '';
+    return;
+  }
+  autocompleteList.innerHTML = users.map(user => `
+    <li class="list-group-item d-flex align-items-center" 
+        data-id="${user.id}" 
+        data-name="${user.name}">
+      <img src="${user.photo_url ? user.photo_url : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`}" 
+           alt="Avatar" 
+           class="rounded-circle me-2" 
+           width="32" height="32">
+      <span>${user.name}</span>
+    </li>
+  `).join('');
+});
+
+autocompleteList.addEventListener('click', function(e) {
+  const li = e.target.closest('li');
+  if (li) {
+    input.value = li.getAttribute('data-name');
+    autocompleteList.innerHTML = '';
+    // Aquí puedes abrir el perfil, iniciar chat, o lo que desees
+    searchAndShowProfiles(input.value);
+  }
+});
+input.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    autocompleteList.innerHTML = '';
+    searchAndShowProfiles(this.value.trim());
+  }
+});
+input.addEventListener('blur', () => setTimeout(() => autocompleteList.innerHTML = '', 100));
+
+// Muestra resultados en un modal, una página, o como prefieras
+async function searchAndShowProfiles(query) {
+  if (!query) return;
+  const { data: users, error } = await supabaseClient
+    .from('users')
+    .select('id, name, photo_url, gender')
+    .ilike('name', `%${query}%`);
+  const searchResultsDiv = document.getElementById('searchResults');
+  if (error || !users.length) {
+    searchResultsDiv.innerHTML = '<div class="text-muted py-2 px-3">No se encontró ningún usuario.</div>';
+    return;
+  }
+  if (!appState.currentUser) return; 
+  const myId = appState.currentUser.id;
+  // No mostrarte a ti mismo
+  const filtered = users.filter(u => u.id !== myId);
+
+  if (!filtered.length) {
+    searchResultsDiv.innerHTML = '<div class="text-muted py-2 px-3">No puedes chatear contigo mismo.</div>';
+    return;
+  }
+
+  // Si solo hay uno, abre el chat directamente
+  if (filtered.length === 1) {
+    abrirChatMatch(myId, filtered[0].id);
+    searchResultsDiv.innerHTML = '';
+    return;
+  }
+
+  // Si hay varios, muestra lista para elegir
+  searchResultsDiv.innerHTML = filtered.map(user => `
+    <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer"
+         onclick="abrirChatMatch('${myId}', '${user.id}'); document.getElementById('searchResults').innerHTML='';">
+      <img src="${user.photo_url ? user.photo_url : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`}" 
+           alt="Avatar" 
+           class="rounded-circle me-2" 
+           width="32" height="32">
+      <span>${user.name}</span>
+      <span class="badge bg-secondary ms-2">${user.gender ? user.gender : ''}</span>
+    </div>
+  `).join('');
+}
+input.addEventListener('blur', () => setTimeout(() => {
+  document.getElementById('autocompleteList').innerHTML = '';
+  document.getElementById('searchResults').innerHTML = '';
+}, 150));
+let longPressTimer = null;
+
+document.getElementById('messages').addEventListener('mousedown', handleLongPressStart);
+document.getElementById('messages').addEventListener('touchstart', handleLongPressStart);
+
+document.getElementById('messages').addEventListener('mouseup', handleLongPressCancel);
+document.getElementById('messages').addEventListener('mouseleave', handleLongPressCancel);
+document.getElementById('messages').addEventListener('touchend', handleLongPressCancel);
+
+
+function handleLongPressCancel() {
+  clearTimeout(longPressTimer);
+}
+
+async function borrarMensaje(msgId) {
+  if (!confirm("¿Borrar este mensaje?")) return;
+  const { error } = await supabaseClient
+    .from('chats')
+    .delete()
+    .eq('id', msgId);
+  if (error) {
+    alert("Error al borrar mensaje: " + error.message);
+  } else {
+    cargarMensajes();
+  }
+}
+
+ // Mostrar/ocultar sidebar
+document.getElementById('msg-fab').onclick = () => {
+  document.getElementById('msg-sidebar').style.transform = 'translateX(0)';
+  loadSidebarChats(); // Importante que se cargue cada vez que se abre
+};
+document.getElementById('close-sidebar').onclick = () => {
+  document.getElementById('msg-sidebar').style.transform = 'translateX(-100%)';
+};
+// Cargar lista de chats en el sidebar
+// Reemplaza TODO el contenido de tu función loadSidebarChats por esto:
+// Carga lista de chats en el sidebar y muestra notificaciones de mensajes no leídos
+// Carga la lista de chats en el sidebar, muestra badge de no leídos y permite borrar completamente el chat
+async function loadSidebarChats() {
+  if (!appState.currentUser) return;
+  const userId = appState.currentUser.id;
+  const { data: chats } = await supabaseClient
+    .from('chats')
+    .select('id,sender_id,receiver_id,content,created_at,deleted')
+    .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
+    .order('created_at', { ascending: false });
+
+  // Agrupa por el otro usuario
+  const usuariosUnicos = {};
+  (chats || []).forEach(chat => {
+    const otherId = chat.sender_id === userId ? chat.receiver_id : chat.sender_id;
+    // Solo guardamos el mensaje más reciente con ese usuario
+    if (
+      !usuariosUnicos[otherId] ||
+      new Date(chat.created_at) > new Date(usuariosUnicos[otherId].created_at)
+    ) {
+      usuariosUnicos[otherId] = chat;
+    }
+  });
+
+  const sidebar = document.getElementById('sidebar-chats-list');
+  sidebar.innerHTML = '';
+
+  let totalNoLeidos = 0; // Para badge global
+
+  for (const otherId in usuariosUnicos) {
+    const chat = usuariosUnicos[otherId];
+    // Obtén los datos del otro usuario
+    const { data: user } = await supabaseClient
+      .from('users')
+      .select('*')
+      .eq('id', otherId)
+      .single();
+    const avatar = user?.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'Usuario')}&background=random`;
+
+    // Calcula mensajes nuevos no leídos
+    const lastRead = localStorage.getItem(`lastRead_${userId}_${otherId}`) || "1970-01-01T00:00:00Z";
+    const nuevos = (chats || []).filter(
+      msg => msg.sender_id === otherId && msg.receiver_id === userId && new Date(msg.created_at) > new Date(lastRead)
+    ).length;
+    totalNoLeidos += nuevos;
+
+    // Contenedor principal de cada chat
+    const div = document.createElement('div');
+    div.className = 'd-flex align-items-center p-2 mb-2 rounded bg-white shadow-sm justify-content-between';
+
+    // Cuerpo principal del chat (nombre, mensaje, avatar)
+    const chatBody = document.createElement('div');
+    chatBody.className = 'd-flex align-items-center';
+    chatBody.style.cursor = 'pointer';
+    chatBody.onclick = () => {
+      abrirChatMatch(userId, otherId);
+      document.getElementById('msg-sidebar').style.transform = 'translateX(-100%)';
+    };
+    chatBody.innerHTML = `
+      <div style="position:relative; width:40px; height:40px;">
+        <img src="${avatar}" width="40" height="40" class="rounded-circle me-2" />
+        ${nuevos > 0 ? `
+          <span class="sidebar-photo-badge badge bg-danger" style="
+            left: 50%; transform: translateX(-50%);
+            top: -10px; font-size: 0.8em; min-width: 20px; position:absolute;">
+            ${nuevos}
+          </span>
+        ` : ''}
+      </div>
+      <div>
+        <strong>${user?.name || 'Usuario'}</strong><br>
+        <span style="font-size:0.9em; color:#888;">${chat.content.slice(0, 30)}</span>
+      </div>
+    `;
+
+    // Botón papelera
+    const trashBtn = document.createElement('button');
+    trashBtn.className = 'btn btn-sm btn-danger ms-2';
+    trashBtn.innerHTML = '<i class="fas fa-trash"></i>';
+    trashBtn.onclick = (e) => {
+      e.stopPropagation(); // No abre el chat
+      borrarChatParaMi(userId, otherId);
+    };
+
+    div.appendChild(chatBody);
+    div.appendChild(trashBtn);
+    sidebar.appendChild(div);
+  }
+
+  // Badge global en el botón flotante
+  const fab = document.getElementById('msg-fab');
+  let badge = fab.querySelector('.msg-badge');
+  if (badge) badge.remove();
+
+  if (totalNoLeidos > 0) {
+    badge = document.createElement('span');
+    badge.className = 'msg-badge';
+    badge.innerText = totalNoLeidos;
+    fab.appendChild(badge);
+  }
+  
+}
+// Borra todos los mensajes entre el usuario actual y el otro usuario (solo para este usuario)
+async function borrarChatParaMi(userId, otherId) {
+  if (!confirm('¿Seguro que quieres borrar este chat? Se eliminarán todos los mensajes.')) return;
+
+  // Borra todos los mensajes donde userId es sender o receiver y otherId es el otro participante
+  const { error } = await supabaseClient
+    .from('chats')
+    .delete()
+    .or(`and(sender_id.eq.${userId},receiver_id.eq.${otherId}),and(sender_id.eq.${otherId},receiver_id.eq.${userId})`);
+
+  if (error) {
+    alert('Error al borrar el chat: ' + error.message);
+  } else {
+    loadSidebarChats(); // recarga el sidebar para que desaparezca el chat
+  }
+}
+  // Función para iniciar chat con soporte
+
+//FUNCION DE CHATS DEL SOPORTE 
+  async function startSupportChat() {
+  if (!appState.currentUser) {
+    alert("Debes iniciar sesión para usar el soporte");
+    return;
+  }
+
+  const userId = appState.currentUser.id;
+  
+  // Verificar si ya existe un chat con soporte
+  const { data: existingChats } = await supabaseClient
+    .from('chats')
+    .select('id')
+    .or(`and(sender_id.eq.${userId},receiver_id.eq.${ADMIN_USER_ID}),
+         and(sender_id.eq.${ADMIN_USER_ID},receiver_id.eq.${userId})`)
+    .limit(1);
+
+  if (existingChats?.length > 0) {
+    // Si ya existe chat, simplemente abrirlo
+    abrirChatMatch(userId, ADMIN_USER_ID);
+  } else {
+    // Crear nuevo chat con mensaje automático del sistema
+    const { error } = await supabaseClient
+      .from('chats')
+      .insert([
+        {
+          sender_id: ADMIN_USER_ID,  // Ahora el mensaje lo envía el sistema
+          receiver_id: userId,
+          content: "¡Hola! ¿En qué te puedo ayudar? Estamos para servirte las 24 horas.",
+          created_at: new Date().toISOString(),
+          is_system_message: true  // Campo adicional para identificar mensajes del sistema
+        }
+      ]);
+
+    if (!error) {
+      abrirChatMatch(userId, ADMIN_USER_ID);
+    } else {
+      alert("Error al iniciar el chat de soporte");
+      console.error("Error:", error);
+    }
+  }
+}
+
+document.getElementById('supportFab')?.addEventListener('click', startSupportChat);
+
+// Función para mostrar u ocultar el mensaje offline
+function checkConnection() {
+  const offlineDiv = document.getElementById('offlineMessage');
+  const appContent = document.querySelector('.container');
+  const navBar = document.querySelector('nav.navbar');
+  const footer = document.querySelector('footer.footer');
+  if (!navigator.onLine) {
+    offlineDiv.style.display = 'flex';
+    if (appContent) appContent.style.display = 'none';
+    if (navBar) navBar.style.display = 'none';
+    if (footer) footer.style.display = 'none';
+  } else {
+    offlineDiv.style.display = 'none';
+    if (appContent) appContent.style.display = '';
+    if (navBar) navBar.style.display = '';
+    if (footer) footer.style.display = '';
+  }
+}
+
+// Detecta cambios de conexión/desconexión
+window.addEventListener('online', checkConnection);
+window.addEventListener('offline', checkConnection);
+
+// Haz la comprobación al cargar la página
+checkConnection();
+
+// Mostrar/ocultar buscador
+const link = document.getElementById('estadoCuentaLink');
+const buscador = document.getElementById('buscadorEstadoCuenta');
+const emailInput = document.getElementById('emailEstadoCuenta');
+const resultadoDiv = document.getElementById('resultadoEstadoCuenta');
+
+if (link && buscador) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    // Alterna visibilidad
+    if (buscador.style.display === "none" || buscador.style.display === "") {
+      buscador.style.display = "block";
+    } else {
+      buscador.style.display = "none";
+      // Limpia todos los campos y resultados
+      if (emailInput) emailInput.value = "";
+      if (resultadoDiv) resultadoDiv.innerHTML = "";
+    }
+  });
+}
+
+document.getElementById('formEstadoCuenta').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('emailEstadoCuenta').value.trim().toLowerCase();
+  const resultadoDiv = document.getElementById('resultadoEstadoCuenta');
+  resultadoDiv.innerHTML = 'Buscando...';
+
+  // Buscar usuario por email
+  const { data: users, error } = await supabaseClient
+    .from('users')
+    .select('name, email, expires_at')
+    .eq('email', email);
+
+  if (error) {
+    resultadoDiv.innerHTML = '<div class="text-danger">Error al buscar.</div>';
+    return;
+  }
+  if (!users || users.length === 0) {
+    resultadoDiv.innerHTML = '<div class="alert alert-warning">No se encontró ningún usuario con ese correo.</div>';
+    return;
+  }
+
+  const user = users[0];
+  let mensaje = `<b>Usuario:</b> ${user.name}<br><b>Email:</b> ${user.email}<br>`;
+  let fechaExpira = user.expires_at ? new Date(user.expires_at) : null;
+  let ahora = await getCubaDate();
+  if (!ahora) {
+  // Muestra un mensaje de error y detén el proceso
+  resultadoDiv.innerHTML = "No se pudo obtener la hora oficial de Cuba. Intenta más tarde.";
+  return;
+}
+
+  if (!fechaExpira) {
+    mensaje += `<span class="text-danger">Cuenta expirada el:<br>${fechaExpira.toLocaleString()}</span>`;
+
+  } else if (ahora > fechaExpira) {
+  mensaje += `<span class="text-success">
+  Le quedan <b>${dias} días</b> y <b>${horas} horas</b>.
+</span>`;
+  } else {
+    const ms = fechaExpira - ahora;
+    const dias = Math.floor(ms / (1000*60*60*24));
+    const horas = Math.floor((ms % (1000*60*60*24)) / (1000*60*60));
+    mensaje += `<span class="text-success">
+  ¡Tu acceso está activo! Restan <b>${dias} días</b> y <b>${horas} horas</b> para renovar tu membresía.
+</span>`;
+  }
+
+  // El botón siempre se muestra si hay cuenta
+  mensaje += `<br><button class="btn btn-warning btn-sm mt-2" onclick="reactivarCuenta('${user.email}')">Reactivar</button>`;
+
+  resultadoDiv.innerHTML = mensaje;
+});
+
+// Botón de reactivar 
+function reactivarCuenta(email) {
+  window.emailReactivar = email;
+  showPage('reactivarCuentaSection');
+  // Oculta el buscador de estado de cuenta
+  document.getElementById('buscadorEstadoCuenta').style.display = 'none';
+  // Limpia campos
+  document.getElementById('reactivarPhone').value = '';
+  document.getElementById('reactivarStatus').innerHTML = '';
+}
+// ========== [SISTEMA DE BUZÓN] ========== //
+function initStarRating() {
+  const stars = document.querySelectorAll('.star-rating i');
+  
+  stars.forEach(star => {
+    star.addEventListener('click', function() {
+      currentRating = parseInt(this.getAttribute('data-rating'));
+      stars.forEach(s => {
+        s.classList.toggle('selected', parseInt(s.getAttribute('data-rating')) <= currentRating);
+        s.classList.toggle('far', parseInt(s.getAttribute('data-rating')) > currentRating);
+        s.classList.toggle('fas', parseInt(s.getAttribute('data-rating')) <= currentRating);
+      });
+    });
+    
+    star.addEventListener('mouseover', function() {
+      const rating = parseInt(this.getAttribute('data-rating'));
+      stars.forEach(s => {
+        s.style.color = parseInt(s.getAttribute('data-rating')) <= rating ? '#FFC107' : '#e0e0e0';
+      });
+    });
+    
+    star.addEventListener('mouseout', () => {
+      stars.forEach(s => {
+        s.style.color = parseInt(s.getAttribute('data-rating')) <= currentRating ? '#FFC107' : '#e0e0e0';
+      });
+    });
+  });
+}
+
+async function cargarSugerencias() {
+  const { data, error } = await supabaseClient
+    .from('suggestions')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(MAX_SUGGESTIONS);
+
+  const container = document.getElementById('suggestionsList');
+  container.innerHTML = '';
+
+  if (error || !data?.length) {
+    container.innerHTML = `
+      <div class="text-center py-4 text-muted">
+        <i class="fas fa-inbox fa-2x mb-2"></i><br>
+        El buzón está vacío. ¡Sé el primero en comentar!
+      </div>`;
+    return;
+  }
+
+  data.forEach(msg => {
+    const fecha = new Date(msg.created_at).toLocaleString('es-ES', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+    
+    const stars = Array(5).fill(0).map((_, i) => 
+      i < (msg.rating || 0) ? 
+        '<i class="fas fa-star"></i>' : 
+        '<i class="far fa-star"></i>'
+    ).join('');
+
+    container.innerHTML += `
+      <div class="suggestion-item card mb-3 p-3">
+        <div class="suggestion-rating">${stars}</div>
+        <p class="mb-2">${msg.content}</p>
+        <small class="text-muted">${fecha}</small>
+      </div>
+    `;
+  });
+}
+
+async function enviarSugerencia() {
+  const contenido = document.getElementById('newSuggestion').value.trim();
+  
+  if (!contenido) {
+    alert("Por favor escribe tu sugerencia");
+    return;
+  }
+
+  showLoader();
+  
+  const { error } = await supabaseClient
+    .from('suggestions')
+    .insert([{ 
+      content: contenido,
+      rating: currentRating > 0 ? currentRating : null
+    }]);
+
+  hideLoader();
+
+  if (error) {
+    alert("Error al enviar: " + error.message);
+  } else {
+    document.getElementById('newSuggestion').value = '';
+    currentRating = 0;
+    await cargarSugerencias();
+    await mantenerLimiteSugerencias();
+    // Efecto visual de éxito
+    const btn = document.querySelector('#suggestionsModal .btn-gradient');
+    btn.innerHTML = '<i class="fas fa-check me-2"></i>¡Enviado!';
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Enviar sugerencia';
+    }, 2000);
+  }
+}
+
+async function mantenerLimiteSugerencias() {
+  const { data } = await supabaseClient
+    .from('suggestions')
+    .select('id')
+    .order('created_at', { ascending: true });
+
+  if (data?.length > MAX_SUGGESTIONS) {
+    const idsABorrar = data.slice(0, data.length - MAX_SUGGESTIONS).map(x => x.id);
+    await supabaseClient
+      .from('suggestions')
+      .delete()
+      .in('id', idsABorrar);
+  }
+}
+
+function mostrarBuzon() {
+  if (!suggestionsModal) {
+    suggestionsModal = new bootstrap.Modal('#suggestionsModal');
+  }
+  cargarSugerencias();
+  suggestionsModal.show();
+}
+
+// Inicialización (añade al final del script)
+document.addEventListener('DOMContentLoaded', () => {
+  initStarRating();
+  
+  // Limpiar rating al cerrar modal
+  document.getElementById('suggestionsModal').addEventListener('hidden.bs.modal', () => {
+    currentRating = 0;
+    document.querySelectorAll('.star-rating i').forEach(star => {
+      star.classList.remove('fas', 'selected');
+      star.classList.add('far');
+      star.style.color = '#e0e0e0';
+    });
+  });
+});
+
+// Cambia el status del pago a "en_espera"
+async function pausarPago(pagoId, btn) {
+  if (!confirm("¿Poner este pago en espera de confirmación?")) return;
+  await supabaseClient.from('pagos').update({ status: 'en_espera' }).eq('id', pagoId);
+
+  // Obtén datos del pago y usuario
+  const { data: pago } = await supabaseClient.from('pagos').select('*').eq('id', pagoId).single();
+  const { data: usuario } = await supabaseClient.from('users').select('*').eq('id', pago.user_id).single();
+
+  // Envía comprobante a Telegram
+  if (pago && usuario) {
+    await enviarComprobanteAdminTelegram({ ...pago, ...usuario}, 'Nos cominicaremos con usted en breve');
+  }
+
+  // Elimina la fila del DOM
+  if (btn && btn.closest('tr')) {
+    btn.closest('tr').remove();
+  }
+  alert('Pago puesto en espera de confirmación.');
+}
+
+// Elimina al usuario y todos sus pagos
+async function eliminarUsuario(userId, btn) {
+  if (!confirm("¿Eliminar este usuario y todos sus pagos? Esta acción no se puede deshacer.")) return;
+
+  // Obtén datos del usuario y su último pago antes de eliminar
+  const { data: usuario } = await supabaseClient.from('users').select('*').eq('id', userId).single();
+  const { data: pago } = await supabaseClient.from('pagos').select('*').eq('user_id', userId).order('id', { ascending: false }).limit(1).single();
+
+  // Notifica a Telegram antes de borrar
+  if (usuario) {
+    await enviarComprobanteAdminTelegram({ ...pago, ...usuario }, 'ELIMINADO');
+  }
+
+  // Elimina pagos
+  await supabaseClient.from('pagos').delete().eq('user_id', userId);
+  // Elimina usuario
+  await supabaseClient.from('users').delete().eq('id', userId);
+
+  // Elimina la fila del DOM
+  if (btn && btn.closest('tr')) {
+    btn.closest('tr').remove();
+  }
+  alert('Usuario y todos sus pagos eliminados.');
+}
+
+function mostrarBotonGruposVipFlotante() {
+  const vipGroupFab = document.getElementById('vipGroupFab');
+  if (!vipGroupFab || !appState.userProfile) return;
+  if (appState.userProfile.tipo_membresia === 'vip') {
+    vipGroupFab.style.display = 'flex';
+  } else {
+    vipGroupFab.style.display = 'none';
+  }
+}
+
+document.getElementById('vipGroupFab').onclick = function() {
+  showPage('gruposVip');
+};
+
+// grupos de vip
+async function cargarGruposVip() {
+  // Reparteros
+  const { data: reparteros } = await supabaseClient
+    .from('users')
+    .select('*')
+  const reparterosFiltrados = (reparteros || []).filter(u =>
+    (u.music_genres || []).some(g =>
+      g.trim().toLowerCase().includes('reparto')
+    )
+  );
+  // Metaleros
+  const { data: metal } = await supabaseClient
+    .from('users')
+    .select('*')
+    .contains('music_genres', ['Metal']);
+  const { data: rock } = await supabaseClient
+    .from('users')
+    .select('*')
+    .contains('music_genres', ['Rock']);
+  const metaleros = [...(metal || []), ...(rock || [])].filter((u, idx, arr) =>
+    arr.findIndex(x => x.id === u.id) === idx
+  );
+  // Gaimers
+  const { data: gaimers } = await supabaseClient
+    .from('users')
+    .select('*')
+    .contains('hobbies', ['Gamer']);
+
+  // Usa el array filtrado para Reparteros
+  mostrarListaGrupo('listaReparteros', 'Reparteros', reparterosFiltrados);
+  mostrarListaGrupo('listaMetaleros', 'Metaleros', metaleros);
+  mostrarListaGrupo('listaGaimers', 'Gaimers', gaimers);
+}
+function mostrarListaGrupo(divId, nombre, usuarios) {
+  const div = document.getElementById(divId);
+  if (!div) return;
+  if (!usuarios || usuarios.length === 0) {
+    div.innerHTML = `<h3>${nombre}</h3><div class="alert alert-info">No hay usuarios en este grupo.</div>`;
+    return;
+  }
+  div.innerHTML = `<h3 class="mt-4 mb-2 text-start"><i class="fas fa-users"></i> ${nombre}</h3>`;
+  usuarios.forEach(u => {
+    div.innerHTML += `
+      <div class="card mb-2 p-2 d-flex flex-row align-items-center">
+        <img src="${u.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.name)}" width="40" height="40" class="rounded-circle me-2" />
+        <span>${u.name} <small class="text-muted">(${(u.music_genres||[]).join(', ')})</small></span>
+        <button class="btn btn-primary ms-auto" onclick="abrirChatMatch('${appState.currentUser.id}', '${u.id}')">
+          <i class="fas fa-comments"></i> Chatear
+        </button>
+      </div>
+    `;
+  });
+}
+//lista de grupos vip
+async function mostrarListaGrupoVip(grupo) {
+  // IDs y nombres
+  const grupos = [
+    { id: 'listaReparteros', nombre: 'Reparteros' },
+    { id: 'listaMetaleros', nombre: 'Metaleros' },
+    { id: 'listaGaimers', nombre: 'Gaimers' }
+  ];
+
+  let divId = '';
+  let nombre = '';
+  let usuarios = [];
+
+  if (grupo === 'reparteros') {
+    divId = 'listaReparteros';
+    nombre = 'Reparteros';
+    const res = await supabaseClient
+      .from('users')
+      .select('*')
+      .contains('music_genres', ['Reparto']);
+    usuarios = res.data || [];
+  } else if (grupo === 'metaleros') {
+    divId = 'listaMetaleros';
+    nombre = 'Metaleros';
+    const { data: metal } = await supabaseClient
+      .from('users')
+      .select('*')
+      .contains('music_genres', ['Metal']);
+    const { data: rock } = await supabaseClient
+      .from('users')
+      .select('*')
+      .contains('music_genres', ['Rock']);
+    usuarios = [...(metal || []), ...(rock || [])].filter((u, idx, arr) =>
+      arr.findIndex(x => x.id === u.id) === idx
+    );
+  } else if (grupo === 'gaimers') {
+    divId = 'listaGaimers';
+    nombre = 'Gaimers';
+    const res = await supabaseClient
+      .from('users')
+      .select('*')
+      .contains('hobbies', ['Gamer']);
+    usuarios = res.data || [];
+  }
+
+  // ---- TOGGLE LOGIC ----
+  const div = document.getElementById(divId);
+  if (!div) return;
+  // Si ya está abierto, ciérralo (ocúltalo)
+  if (div.getAttribute('data-abierto') === 'true') {
+    div.innerHTML = '';
+    div.setAttribute('data-abierto', 'false');
+    return;
+  }
+  // Cierra los otros grupos (opcional)
+  grupos.forEach(g => {
+    const d = document.getElementById(g.id);
+    if (d && g.id !== divId) {
+      d.innerHTML = '';
+      d.setAttribute('data-abierto', 'false');
+    }
+  });
+
+  // Si no estaba abierto, muéstralo
+  div.setAttribute('data-abierto', 'true');
+  if (!usuarios.length) {
+    div.innerHTML = `<div class="alert alert-info">No hay usuarios en este grupo.</div>`;
+    return;
+  }
+  div.innerHTML = `<h4 class="mt-2 mb-2 text-start"><i class="fas fa-users"></i> ${nombre}</h4>`;
+  usuarios.forEach(u => {
+    div.innerHTML += `
+      <div class="card mb-2 p-2 d-flex flex-row align-items-center">
+        <img src="${u.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.name)}" width="40" height="40" class="rounded-circle me-2" />
+        <span>${u.name} <small class="text-muted">(${(u.music_genres||[]).join(', ')})</small></span>
+        <button class="btn btn-primary ms-auto" onclick="abrirChatMatch('${appState.currentUser.id}', '${u.id}')">
+          <i class="fas fa-comments"></i> Chatear
+        </button>
+      </div>
+    `;
+  });
+}
+
+// ================================
+// PROMOCIONES
+// ================================
+async function cargarPromociones() {
+  // Carga las promos ordenadas por "orden"
+  const { data: promos } = await supabaseClient
+    .from('promociones')
+    .select('*')
+    .order('orden', { ascending: true });
+
+  const div = document.getElementById('promocionesList');
+  div.innerHTML = '';
+  (promos || []).forEach(p => {
+  div.innerHTML += `
+    <div class="col-md-6 col-lg-4">
+      <div class="card mb-4 shadow promo-float">
+        <div class="card-body text-center">
+          ${p.media_tipo === 'video' 
+            ? `<video src="${p.media_url}" controls style="max-width:100%;max-height:220px"></video>`
+            : `<img src="${p.media_url}" style="max-width:100%;max-height:220px">`}
+          <h5 class="mt-2">${p.titulo || ''}</h5>
+          <div class="mb-2">${p.descripcion || ''}</div>
+          <div class="mb-2"><i class="fas fa-phone"></i> ${p.telefono || ''}</div>
+          <!-- Botones de like y comentar -->
+          <div class="d-flex justify-content-center gap-3 mt-3">
+            <button class="btn btn-light btn-like" data-id="${p.id}" style="border-radius:50%;font-size:1.3em;">
+              <i class="fa-regular fa-heart"></i> <span class="like-count" id="like-count-${p.id}">0</span>
+            </button>
+            <button class="btn btn-light btn-comment" data-id="${p.id}" style="border-radius:50%;font-size:1.3em;">
+              <i class="fa-regular fa-comment"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Contenedor de comentarios -->
+        <div class="comments-box p-3" id="comments-box-${p.id}" style="display:none;">
+          <div id="comments-list-${p.id}" class="mb-2"></div>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Escribe un comentario..." id="comment-input-${p.id}">
+            <button class="btn btn-primary" onclick="enviarComentario('${p.id}')">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+});
+
+  // Si eres admin, muestra el panel para subir/editar promos
+  const isAdmin = appState.userProfile?.email?.trim().toLowerCase() === "admin1221@gmail.com";
+  document.getElementById('adminPromocionesPanel').style.display = isAdmin ? "block" : "none";
+  if (isAdmin) renderAdminPromosForm(promos || []);
+}
+
+// Panel de administración de promociones SOLO para el admin
+function renderAdminPromosForm(promos) {
+  const cont = document.getElementById('promosFormContainer');
+  cont.innerHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const p = promos[i] || {};
+    cont.innerHTML += `
+      <div class="col-md-6 col-lg-4 mb-3">
+        <form class="promo-admin-form" data-idx="${i}" data-id="${p.id || ''}">
+          <div class="card p-2">
+            <label class="form-label">Imagen/Video:</label>
+            ${p.media_url ? 
+              (p.media_tipo === 'video' 
+                ? `<video src="${p.media_url}" controls style="width:100%;max-height:120px"></video>`
+                : `<img src="${p.media_url}" style="width:100%;max-height:120px">`
+              ) : ''
+            }
+            <input type="file" accept="image/*,video/mp4" class="form-control mb-2" name="media">
+            <label class="form-label mt-2">Título:</label>
+            <input type="text" class="form-control mb-2" name="titulo" value="${p.titulo||''}">
+            <label class="form-label">Descripción:</label>
+            <textarea class="form-control mb-2" name="descripcion" rows="2">${p.descripcion||''}</textarea>
+            <label class="form-label">Teléfono:</label>
+            <input type="text" class="form-control mb-2" name="telefono" value="${p.telefono||''}">
+            <button type="submit" class="btn btn-primary w-100">${p.id ? 'Actualizar' : 'Subir'}</button>
+            ${p.id ? `<button type="button" class="btn btn-danger w-100 mt-2 eliminarPromoBtn">Eliminar</button>` : ''}
+          </div>
+        </form>
+      </div>
+    `;
+  }
+
+  // Añade listeners a cada form
+  document.querySelectorAll('.promo-admin-form').forEach(form => {
+    form.onsubmit = async function(e) {
+      e.preventDefault();
+      const idx = this.getAttribute('data-idx');
+      const id = this.getAttribute('data-id');
+      const fd = new FormData(this);
+      const titulo = fd.get('titulo');
+      const descripcion = fd.get('descripcion');
+      const telefono = fd.get('telefono');
+      const file = fd.get('media');
+      let media_url = promos[idx]?.media_url || '';
+      let media_tipo = promos[idx]?.media_tipo || '';
+      // Si hay archivo nuevo, súbelo a Storage
+      if (file && file.size > 0) {
+        if (file.type.startsWith("image/")) {
+          if (file.size > 2*1024*1024) return alert("Imagen máxima: 2MB");
+          media_tipo = "foto";
+        } else if (file.type.startsWith("video/")) {
+          if (file.size > 30*1024*1024) return alert("Video máximo: 30MB");
+          media_tipo = "video";
+        } else {
+          return alert("Solo imagen JPG/PNG o video MP4");
+        }
+        // Sube a Storage
+        const ext = file.name.split('.').pop();
+        const nombre = `promo_${idx}_${Date.now()}.${ext}`;
+        const { data, error } = await supabaseClient.storage.from('promociones').upload(nombre, file, { upsert: true });
+        if (error) return alert("Error subiendo archivo");
+        media_url = supabaseClient.storage.from('promociones').getPublicUrl(nombre).data.publicUrl;
+      }
+     // Inserta o actualiza
+        if (id) {
+          const { error } = await supabaseClient.from('promociones').update({
+            titulo, descripcion, telefono, media_url, media_tipo, orden: Number(idx)
+          }).eq('id', id);
+          if (error) {
+            alert("ERROR al actualizar promoción: " + error.message);
+            return;
+          }
+        } else {
+          const { error } = await supabaseClient.from('promociones').insert([{
+            titulo, descripcion, telefono, media_url, media_tipo, orden: Number(idx)
+          }]);
+          if (error) {
+            alert("ERROR al guardar promoción: " + error.message);
+            return;
+          }
+        }
+        alert("Guardado!");
+        cargarPromociones();
+    };
+    // Eliminar promoción
+    form.querySelector('.eliminarPromoBtn')?.addEventListener('click', async function(e){
+      e.preventDefault();
+      if(confirm('¿Seguro que quieres eliminar esta promoción?')) {
+        const id = form.getAttribute('data-id');
+        if(id) {
+          await supabaseClient.from('promociones').delete().eq('id', id);
+          cargarPromociones();
+        }
+      }
+    });
+  });
+}
+document.getElementById('promocionesLink').onclick = function(e) {
+  e.preventDefault();
+  showPage('promocionesPage');
+}
+
+// 1. Escuchar clicks en botones
+// Botón Like anónimo
+document.addEventListener('click', async function(e) {
+  if (e.target.closest('.btn-like')) {
+    const promoId = e.target.closest('.btn-like').dataset.id;
+    await likePromocion(promoId);
+  }
+});
+
+async function likePromocion(promocion_id) {
+  // Inserta un like anónimo
+  await supabaseClient.from('promocion_likes').insert([
+    { promocion_id }
+  ]);
+  cargarLikes(promocion_id);
+}
+
+async function cargarLikes(promocion_id) {
+  const { count } = await supabaseClient
+    .from('promocion_likes')
+    .select('id', { count: 'exact', head: true })
+    .eq('promocion_id', promocion_id);
+
+  document.getElementById('like-count-' + promocion_id).textContent = count || 0;
+}
+
+document.addEventListener('click', async function(e) {
+  // LIKE
+  if (e.target.closest('.btn-like')) {
+    const promoId = e.target.closest('.btn-like').dataset.id;
+    if (localStorage.getItem('liked_' + promoId)) {
+      alert('¡Ya le diste like a esta promoción!');
+      return;
+    }
+    await likePromocion(promoId);
+    localStorage.setItem('liked_' + promoId, '1');
+    e.target.closest('.btn-like').classList.add('btn-success');
+  }
+
+  // COMENTARIO (MOSTRAR/OCULTAR CAJA)
+  if (e.target.closest('.btn-comment')) {
+    const promoId = e.target.closest('.btn-comment').dataset.id;
+    const box = document.getElementById('comments-box-' + promoId);
+    if (box) {
+      box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
+      if (box.style.display === 'block') {
+        cargarComentarios(promoId);
+      }
+    }
+  }
+});
+
+// 4. Enviar comentario, borrar el más antiguo si hay 50
+async function enviarComentario(promocion_id) {
+  const input = document.getElementById('comment-input-' + promocion_id);
+  const texto = input.value.trim();
+  if (!texto) return;
+
+  // Trae los comentarios actuales
+  const { data: comentarios } = await supabaseClient
+    .from('promocion_comentarios')
+    .select('id')
+    .eq('promocion_id', promocion_id)
+    .order('created_at', { ascending: true });
+
+  // Si hay 50 o más, borra el más antiguo
+  if (comentarios && comentarios.length >= 50) {
+    const masAntiguo = comentarios[0];
+    await supabaseClient
+      .from('promocion_comentarios')
+      .delete()
+      .eq('id', masAntiguo.id);
+  }
+
+  // Inserta el nuevo comentario
+  await supabaseClient.from('promocion_comentarios').insert([{
+    promocion_id,
+    comentario: texto,
+    usuario_id: appState.currentUser?.id || null // Opcional
+  }]);
+
+  input.value = '';
+  cargarComentarios(promocion_id);
+}
+
+// 5. Mostrar comentarios (máximo 50 últimos)
+async function cargarComentarios(promocion_id) {
+  const { data: comentarios } = await supabaseClient
+    .from('promocion_comentarios')
+    .select('comentario, created_at')
+    .eq('promocion_id', promocion_id)
+    .order('created_at', { ascending: true });
+
+  const list = document.getElementById('comments-list-' + promocion_id);
+  if (!list) return;
+  if (!comentarios || comentarios.length === 0) {
+    list.innerHTML = '<span class="text-muted">Sin comentarios aún.</span>';
+  } else {
+    const ultimos = comentarios.slice(-50);
+    list.innerHTML = ultimos.map(c =>
+      `<div class="border-bottom py-1">${c.comentario}</div>`
+    ).join('');
+  }
+}
+
+// 6. Inicializar likes y comentarios al cargar promociones
+function inicializarLikesYComentarios(promos) {
+  promos.forEach(p => {
+    cargarLikes(p.id);
+    cargarComentarios(p.id);
+  });
+}
+
+// --- RECUPERACIÓN DE CONTRASEÑA SUPABASE ---
+document.getElementById('recuperarPasswordForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const email = document.getElementById('recEmail').value.trim();
+  const msg = document.getElementById('recuperarPasswordMsg');
+  msg.innerHTML = 'Enviando enlace de recuperación...';
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: "https://legendary-moonbeam-19c561.netlify.app"
+  });
+  if (error) {
+    msg.innerHTML = '<span class="text-danger">Error: ' + (error.message || 'No se pudo enviar el enlace') + '</span>';
+  } else {
+    msg.innerHTML = '<span class="text-success">¡Listo! Revisa tu correo y sigue el enlace para restablecer tu contraseña.</span>';
+  }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(window.location.hash.replace('#', '?'));
+  if (params.has('access_token')) {
+    // El usuario vino del link de recuperación de contraseña
+    showPage('nuevaPasswordPage');
+  }
+});
+
+document.getElementById('nuevaPasswordForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const newPassword = document.getElementById('newPassword').value;
+  const msg = document.getElementById('nuevaPasswordMsg');
+  msg.innerHTML = 'Cambiando contraseña...';
+
+  // El usuario ya está autenticado temporalmente por el token del link
+  const { data, error } = await supabaseClient.auth.updateUser({
+    password: newPassword
+  });
+
+  if (error) {
+    msg.innerHTML = '<span class="text-danger">Error al cambiar la contraseña: ' + (error.message || '') + '</span>';
+  } else {
+    msg.innerHTML = '<span class="text-success">¡Contraseña cambiada! Ahora puedes iniciar sesión.</span>';
+    setTimeout(()=>showPage('login'), 2000);
+  }
+});
+  </script> 
+</body>
+</html> 
